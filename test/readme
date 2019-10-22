@@ -1,0 +1,56 @@
+
+//IMAGES
+docker build -t deployer_golang -f Dockerfile_golang .
+docker build -t deployer_nodejs -f Dockerfile_nodejs .
+docker build -t deployer_nginx -f Dockerfile_nginx .
+
+//CONTAINERS
+docker rm soajs_deployer_nodejs
+docker run -i -t --name soajs_deployer_nodejs deployer_nodejs bash
+docker rm soajs_deployer_golang
+docker run -i -t --name soajs_deployer_golang deployer_golang su
+docker rm soajs_deployer_nginx
+docker run -i -t --name soajs_deployer_nginx deployer_nginx bash
+
+
+//CONFIG
+export SOAJS_CONFIG_ACC_INFO='{"token":null,"provider":"github","owner":"soajs","domain":"github.com"}'
+export SOAJS_CONFIG_REPO_INFO='{"repo":"soajs.deployer.example.config","branch":"master"}'
+//CONFIG with commit
+export SOAJS_CONFIG_REPO_INFO='{"repo":"soajs.deployer.example.config","branch":"master","commit":""}'
+
+
+//GOLANG
+export SOAJS_GIT_ACC_INFO='{"token":null,"provider":"github","owner":"soajs","domain":"github.com"}'
+export SOAJS_GIT_REPO_INFO='{"repo":"soajs.golang.mux","branch":"master"}'
+
+
+//NODEJS
+export SOAJS_GIT_ACC_INFO='{"token":null,"provider":"github","owner":"soajs","domain":"github.com"}'
+export SOAJS_GIT_REPO_INFO='{"repo":"soajs.urac","branch":"master"}'
+
+
+//NGINX
+export SOAJS_GIT_ACC_INFO='{"token":null,"provider":"github","owner":"soajs","domain":"github.com"}'
+export SOAJS_GIT_REPO_INFO='{"repo":"soajs.website.ui","branch":"master"}'
+export SOAJS_GATEWAY_CONFIG='{"domain":"api.soajs.org","port":"4000","ip":"127.0.0.1"}'
+export SOAJS_SITE_CONFIG='{"domain":"www.soajs.org"}'
+//ARRAY
+export SOAJS_SITE_CONFIG='[{"domain":"www.soajs.org"},{"domain":"www.soajs.io","folder":"/io"}]'
+
+//RUN GOLANG
+node . -T golang -S deploy
+node . -T golang -S install
+node . -T golang -S run
+
+
+//RUN NODEJS
+node . -T nodejs -S deploy
+node . -T nodejs -S install
+node . -T nodejs -S run
+
+
+//RUN NGINX
+node . -T nginx -S deploy
+node . -T nginx -S install
+node . -T nginx -S run

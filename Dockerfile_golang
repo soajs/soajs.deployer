@@ -1,0 +1,11 @@
+FROM golang:1.12.5-alpine
+
+RUN mkdir -p /opt/soajs/soajs.deployer/node_modules
+RUN mkdir -p /opt/soajs/tmp
+RUN apk add --no-cache curl nodejs nodejs-npm git
+WORKDIR /opt/soajs/soajs.deployer/
+COPY . .
+RUN npm install
+WORKDIR /opt/soajs/soajs.deployer/deployer/
+
+CMD ["/bin/sh"]

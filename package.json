@@ -1,0 +1,36 @@
+{
+  "name": "soajs.deployer",
+  "description": "SOAJS Deployer",
+  "version": "3.0.0",
+  "author": {
+    "name": "SOAJS Team",
+    "email": "team@soajs.org"
+  },
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:antoinehage/soajs.deployer.git"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "scripts": {
+    "test": ""
+  },
+  "devDependencies": {
+    "grunt": "1.0.4",
+    "grunt-contrib-jshint": "2.1.0"
+  },
+  "dependencies": {
+    "async": "3.1.0",
+    "commander": "3.0.2",
+    "fs-extra": "8.1.0",
+    "handlebars":"4.4.3",
+    "openssl-wrapper": "0.3.4",
+    "rimraf": "3.0.0",
+    "dockerode": "soajs/dockerode.git",
+    "http-proxy": "1.18.0",
+    "request": "2.88.0"
+  }
+}
