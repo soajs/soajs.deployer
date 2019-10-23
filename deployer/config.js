@@ -40,12 +40,6 @@ const config = {
 	
 	"nginx": {
 		"label": "soajsgateway"
-	},
-	
-	
-	java: {
-		appArchivePath: process.env.SOAJS_WAR_FILE_PATH || '/',
-		configDir: process.env.SOAJS_TOMCAT_CONFIG_DIR || '/usr/local/tomcat/conf'
 	}
 };
 
