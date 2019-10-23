@@ -81,7 +81,7 @@ let golang = {
 			const get = spawn('go', ['get', '-v', './...'], {stdio: 'inherit', cwd: repoDirPath});
 			
 			get.on('data', (data) => {
-				console.log(data.toString());
+				log(data.toString());
 			});
 			
 			get.on('close', (code) => {
@@ -132,7 +132,7 @@ let golang = {
 			const go = spawn(options.git.repo, [], {stdio: 'inherit', cwd: repoDirPath});
 			
 			go.on('data', (data) => {
-				console.log(data.toString());
+				log(data.toString());
 			});
 			
 			go.on('close', (code) => {

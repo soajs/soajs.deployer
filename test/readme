@@ -40,6 +40,7 @@ export SOAJS_SITE_CONFIG='[{"domain":"www.soajs.org"},{"domain":"www.soajs.io","
 
 export SOAJS_ENV='DASHBOARD'
 export SOAJS_EXTKEY='888888888'
+export SOAJS_SSL_CONFIG='{"email":"me@ddd.com","domains":["www.d1.com","www.d2.com"]}'
 
 //RUN GOLANG
 node . -T golang -S deploy
@@ -57,3 +58,5 @@ node . -T nodejs -S run
 node . -T nginx -S deploy
 node . -T nginx -S install
 node . -T nginx -S run
+
+certbot --nginx -n --agree-tos -m antoine@soajs.org -d api.soajs.org,www.soajs.org

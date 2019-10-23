@@ -37,7 +37,7 @@ const cloner = {
 	 *
 	 */
 	clone(options, cb) {
-		if (!options.git){
+		if (!options.git) {
 			log('Repository git information are missing, skipping ...');
 			return cb();
 		}
@@ -86,11 +86,11 @@ const cloner = {
 			const clone = spawn('git', gitCommands, {stdio: 'inherit'});
 			
 			clone.on('error', (error) => {
-				console.log(`Clone process failed with error: ${error}`);
+				log(`Clone process failed with error: ${error}`);
 				throw new Error(error);
 			});
 			clone.on('data', (data) => {
-				console.log(data.toString());
+				log(data.toString());
 			});
 			clone.on('close', (code) => {
 				if (code === 0) {
@@ -132,7 +132,7 @@ const cloner = {
 		let repoPath = path.normalize(options.clonePath + options.git.repo);
 		if (fs.existsSync(repoPath)) {
 			rimraf(repoPath, (error) => {
-				if (error){
+				if (error) {
 					throw new Error(error);
 				}
 				fnContinue(repoPath);

@@ -1,4 +1,5 @@
 FROM golang:1.12.5-alpine
+MAINTAINER SOAJS Team <team@soajs.org>
 
 RUN mkdir -p /opt/soajs/soajs.deployer/node_modules
 RUN mkdir -p /opt/soajs/tmp

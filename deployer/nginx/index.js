@@ -26,7 +26,7 @@ function startNginx(cb) {
 	const nginx = spawn('service', ['nginx', 'start'], {stdio: 'inherit'});
 	
 	nginx.on('data', (data) => {
-		console.log(data.toString());
+		log(data.toString());
 	});
 	
 	nginx.on('close', (code) => {
@@ -77,6 +77,7 @@ const exp = {
 	},
 	"install": (options, cb) => {
 		let installFnArray = [(cb) => {
+			options.sslDomain = [];
 			cb(null, options);
 		}];
 		
@@ -85,6 +86,9 @@ const exp = {
 				log('Fetching SOAJS Gateway configuration ...');
 				gateway.conf(process.env.SOAJS_GATEWAY_CONFIG, (gatewayConf) => {
 					obj.gatewayConf = gatewayConf;
+					if (obj.gatewayConf && obj.gatewayConf.domain) {
+						obj.sslDomain.push(obj.gatewayConf.domain);
+					}
 					return cb(null, obj);
 				});
 			} else {
@@ -201,12 +205,60 @@ const exp = {
 				return cb(error, obj);
 			});
 		});
-		
-		
 		installFnArray.push((obj, cb) => {
 			// certbot
-			
-			return cb(null, obj);
+			if (process.env.SOAJS_SSL_CONFIG) {
+				let configuration = null;
+				try {
+					configuration = JSON.parse(process.env.SOAJS_SSL_CONFIG);
+				} catch (e) {
+					log('Unable to parse the content of SOAJS_SSL_CONFIG ...');
+					log(e);
+					return cb(null, obj);
+				}
+				let sslDomainStr = null;
+				
+				if (!options.sslDomain || !Array.isArray(options.sslDomain)) {
+					options.sslDomain = [];
+				}
+				if (configuration && configuration.domains && Array.isArray(configuration.domains) && configuration.domains.length > 0) {
+					sslDomainStr = configuration.domains.join(",");
+				}
+				if (options.sslDomain.length > 0) {
+					if (sslDomainStr) {
+						sslDomainStr += "," + options.sslDomain.join(",");
+					}
+					else {
+						sslDomainStr = options.sslDomain.join(",");
+					}
+				}
+				if (!configuration.email) {
+					log('Unable to find email in SOAJS_SSL_CONFIG. Skipping ...');
+					return cb(null, obj);
+				}
+				let commands = ['--nginx', '-n', '--agree-tos', '-m', configuration.email];
+				if (sslDomainStr) {
+					commands.concat (['-d', sslDomainStr]);
+					log(`The list of domains to create certifications for is: ${sslDomainStr}`);
+				}
+				const certbot = spawn('certbot', commands, {stdio: 'inherit'});
+				
+				certbot.on('data', (data) => {
+					log(data.toString());
+				});
+				
+				certbot.on('close', (code) => {
+					log(`SSL process exited with code: ${code}`);
+					return cb(null, obj);
+				});
+				certbot.on('error', (error) => {
+					log(`SSL process failed with error: ${error}`);
+					return cb(error);
+				});
+			}
+			else {
+				return cb(null, obj);
+			}
 		});
 		async.waterfall(installFnArray, (err) => {
 			if (err) {

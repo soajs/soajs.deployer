@@ -85,7 +85,7 @@ let nodejs = {
 			const npm = spawn('npm', ['install'], {stdio: 'inherit', cwd: repoDirPath});
 			
 			npm.on('data', (data) => {
-				console.log(data.toString());
+				log(data.toString());
 			});
 			npm.on('close', (code) => {
 				if (code === 0) {
@@ -150,7 +150,7 @@ let nodejs = {
 			});
 			
 			node.on('data', (data) => {
-				console.log(data.toString());
+				log(data.toString());
 			});
 			
 			node.on('close', (code) => {

@@ -72,6 +72,9 @@ let lib = {
 							"root": oneSite.conf.folder,
 							"domain": oneSite.conf.domain,
 						};
+						if (oneSite.conf.domain) {
+							options.sslDomain.push(oneSite.conf.domain);
+						}
 						site.write(siteConfig);
 						return callback(null);
 					}, (error) => {

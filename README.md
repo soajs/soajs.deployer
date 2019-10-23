@@ -39,11 +39,13 @@ SOAJS_SRV_MAIN | The main file for nodejs application | [.] | app.js
 
 #### NGINX
 The configuration path of nginx is /etc/nginx/, if you have a custom location you can set the SOAJS_NX_LOC
+Please note that there is no need to do any configuration regarding SSL, it is done automatically when you set SOAJS_SSL_CONFIG
 
 ENV Variable | Description | Default | Example
 --- | ----- | :---: | ---
 SOAJS_GATEWAY_CONFIG | A stringified JSON object. domainPrefix only needed for dashboard env to update the console UI configuration with SOAJS_EXTKEY | null | '{"ip":"","port":"4000","domain:"api.mydomain.com","domainPrefix":"api"}'
 SOAJS_SITE_CONFIG | A stringified JSON object | null | '{"domain:"www.mydomain.com","folder":"/"}' or '[{"domain:"www.mydomain.com","folder":"/www"},{"domain:"sub.mydomain.com","folder":"/sub"}]'
+SOAJS_SSL_CONFIG | A stringified JSON object. domains is an array of extra domains to create SSL certifications for | null | '{"email":"me@ddd.com","domains":["www.d1.com","www.d2.com"]}'
 SOAJS_NX_LOC | Do not set this if you do not know what you are doing | /etc/nginx/ | 
 
 #### SOAJS console

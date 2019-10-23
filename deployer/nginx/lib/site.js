@@ -68,6 +68,7 @@ let lib = {
 						"root": configuration[i].folder,
 						"domain": configuration[i].domain
 					});
+					options.sslDomain.push(configuration[i].domain);
 				}
 			}
 			return cb();
@@ -86,6 +87,7 @@ let lib = {
 					"domain": configuration.domain,
 					"git": options.git
 				});
+				options.sslDomain.push(configuration.domain);
 			}
 			return cb();
 		}
