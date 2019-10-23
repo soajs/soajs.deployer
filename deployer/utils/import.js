@@ -115,6 +115,9 @@ const importer = {
 				return cb();
 			}
 		} else {
+			if (options && config && options.config && options.config.setup){
+				log(`No configuration for ENV [${env}] for [${config.content} - ${config.type}] detected in custom configuration repository, skipping`);
+			}
 			return cb();
 		}
 	},
