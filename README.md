@@ -42,7 +42,7 @@ The configuration path of nginx is /etc/nginx/, if you have a custom location yo
 
 ENV Variable | Description | Default | Example
 --- | ----- | :---: | ---
-SOAJS_GATEWAY_CONFIG | A stringified JSON object | null | '{"ip":"","port":"4000","domain:"api.mydomain.com"}'
+SOAJS_GATEWAY_CONFIG | A stringified JSON object. domainPrefix only needed for dashboard env to update the console UI configuration with SOAJS_EXTKEY | null | '{"ip":"","port":"4000","domain:"api.mydomain.com","domainPrefix":"api"}'
 SOAJS_SITE_CONFIG | A stringified JSON object | null | '{"domain:"www.mydomain.com","folder":"/"}' or '[{"domain:"www.mydomain.com","folder":"/www"},{"domain:"sub.mydomain.com","folder":"/sub"}]'
 SOAJS_NX_LOC | Do not set this if you do not know what you are doing | /etc/nginx/ | 
 

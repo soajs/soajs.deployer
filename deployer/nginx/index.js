@@ -13,6 +13,7 @@ const spawn = require('child_process').spawn;
 const utils = require('../utils');
 const async = require("async");
 const gateway = require('./lib/gateway.js');
+const console = require('./lib/console.js');
 const site = require('./lib/site.js');
 const sites = require('./lib/sites.js');
 
@@ -126,6 +127,27 @@ const exp = {
 			}
 		});
 		installFnArray.push((obj, cb) => {
+			if (obj.gatewayConf) {
+				if (!process.env.SOAJS_ENV || ['dashboard'].indexOf(process.env.SOAJS_ENV.toLowerCase()) === -1) {
+					return cb(null, obj);
+				}
+				
+				log('Update SOAJS console UI with the right ext KEY ...');
+				console.updateConfig({
+					"location": obj.paths.nginx.site + "soajs.dashboard.ui/",
+					"domainPrefix": obj.gatewayConf.domainPrefix,
+					"extKey": process.env.SOAJS_EXTKEY
+				}, (error, done) => {
+					if (done) {
+						log('SOAJS console UI updated successfully.');
+					}
+					return cb(null, obj);
+				});
+			} else {
+				return cb(null, obj);
+			}
+		});
+		installFnArray.push((obj, cb) => {
 			if (process.env.SOAJS_SITE_CONFIG) {
 				let configuration = null;
 				try {
@@ -179,6 +201,8 @@ const exp = {
 				return cb(error, obj);
 			});
 		});
+		
+		
 		installFnArray.push((obj, cb) => {
 			// certbot
 			
