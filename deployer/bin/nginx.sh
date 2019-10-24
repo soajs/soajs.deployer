@@ -10,4 +10,4 @@ if [[ -z "${SOAJS_SSL_CONFIG}" ]]; then
 fi
 
 ### Start nginx with daemon off as our main pid
-nginx -g "daemon off;"
+service nginx start -g "daemon off;"
