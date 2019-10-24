@@ -222,23 +222,20 @@ const exp = {
 					options.sslDomain = [];
 				}
 				if (configuration && configuration.domains && Array.isArray(configuration.domains) && configuration.domains.length > 0) {
-					sslDomainStr = configuration.domains.join(",");
+					options.sslDomain = options.sslDomain.concat(configuration.domains);
 				}
 				if (options.sslDomain.length > 0) {
-					if (sslDomainStr) {
-						sslDomainStr += "," + options.sslDomain.join(",");
-					}
-					else {
 						sslDomainStr = options.sslDomain.join(",");
-					}
 				}
+				
 				if (!configuration.email) {
 					log('Unable to find email in SOAJS_SSL_CONFIG. Skipping ...');
 					return cb(null, obj);
 				}
+				
 				let commands = ['--nginx', '-n', '--agree-tos', '-m', configuration.email];
 				if (sslDomainStr) {
-					commands.concat (['-d', sslDomainStr]);
+					commands = commands.concat (['-d', sslDomainStr]);
 					log(`The list of domains to create certifications for is: ${sslDomainStr}`);
 				}
 				const certbot = spawn('certbot', commands, {stdio: 'inherit'});
