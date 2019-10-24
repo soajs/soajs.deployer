@@ -1,6 +1,5 @@
 # soajs.deployer
-
-soajs deployer runs inside your docker image and helps you deploy from source code and run your application
+SOAJS deployer runs inside your docker image and helps you deploy from source code and run your application
 
 ### SOAJS deployer paths:
 Path | Description
@@ -12,14 +11,14 @@ Path | Description
 ### Environment variables
 
 #### Source code repository
-These environment variables works for nodejs and golang
+These environment variables works for Nodejs and Golang
+
 NOTE: if provider is equal to bitbucket then the domain can by bitbucket.org for SaaS or the domain for your enterprise bitbucket installation
 
 ENV Variable | Description | Default | Example
 --- | ----- | :---: | ---
 SOAJS_GIT_ACC_INFO | A stringified JSON object | null | '{"token":null,"provider":"bitbucket","owner":"soajs","domain":"bitbucket.org"}'
 SOAJS_GIT_REPO_INFO | A stringified JSON object | null | '{"repo":"soajs.deployer.example.config","branch":"master","commit":null}'
-
 
 ### Golang
 The deployment path of golang source code is @[/go/src/REPO] where [REPO] is the value set @ SOAJS_GIT_REPO_INFO
@@ -31,7 +30,6 @@ ENV Variable | Description | Default | Example
 --- | ----- | :---: | ---
 SOAJS_NODEJS_MEMORY | Controle nodejs max_old_space_size the number of megabytes allowed | null | 4096
 SOAJS_SRV_MAIN | The main file for nodejs application | [.] | app.js
-
 
 #### Configuration repository
 SOAJS deployer allows you to add a configuration content from a git repository. This repository has a working example [https://github.com/soajs/soajs.deployer.example.config]
