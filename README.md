@@ -29,14 +29,14 @@ The deployment path of nodejs source code is @[/opt/soajs/node_modules/REPO] whe
 ENV Variable | Description | Default | Example
 --- | ----- | :---: | ---
 SOAJS_NODEJS_MEMORY | Controle nodejs max_old_space_size the number of megabytes allowed | null | 4096
-SOAJS_SRV_MAIN | The main file for nodejs application | [.] | app.js
+SOAJS_SRV_MAIN | The main file for nodejs application | . | app.js
 
 #### Configuration repository
 SOAJS deployer allows you to add a configuration content from a git repository. This repository has a working example [https://github.com/soajs/soajs.deployer.example.config]
 
 ENV Variable | Description | Default | Example
 --- | ----- | :---: | ---
-SOAJS_ENV | The environment where you are deploying | [dev] |
+SOAJS_ENV | The environment where you are deploying | dev |
 SOAJS_CONFIG_ACC_INFO | A stringified JSON object | null | '{"token":null,"provider":"github","owner":"soajs","domain":"github.com"}'
 SOAJS_CONFIG_REPO_INFO | A stringified JSON object | null | '{"repo":"soajs.deployer.example.config","branch":"master","commit":null}'
 
@@ -55,9 +55,9 @@ SOAJS_EXTKEY | The tenant external key to use | null |
 #### SOAJS
 ENV Variable | Description | Default | Example
 --- | ----- | :---: | ---
-SOAJS_ENV | The environment where you are deploying | [dev] | [dev]
-SOAJS_PROFILE_LOC | The profile location. this is needed when you deploy a soajs service | [/opt/soajs/profiles/] |
-SOAJS_REGISTRY_API | Where is the gateway of this env to fetch registry from. this is needed when you deploy a service behind SOAJS Gateway | [BLANK] | [192.168.5.1:5000]
+SOAJS_ENV | The environment where you are deploying | dev | dev
+SOAJS_PROFILE_LOC | The profile location. this is needed when you deploy a soajs service | /opt/soajs/profiles/ |
+SOAJS_REGISTRY_API | Where is the gateway of this env to fetch registry from. this is needed when you deploy a service behind SOAJS Gateway | BLANK | "192.168.5.1:5000"
 
 ### License
 *Copyright SOAJS All Rights Reserved.*
