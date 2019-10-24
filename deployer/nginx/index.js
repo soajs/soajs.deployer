@@ -22,7 +22,7 @@ const sites = require('./lib/sites.js');
  *
  */
 function startNginx(cb) {
-	const nginx = spawn('service', ['nginx', 'start'], {stdio: 'inherit'});
+	const nginx = spawn('./bin/nginx.sh', {stdio: 'inherit'});
 	
 	nginx.on('data', (data) => {
 		log(data.toString());

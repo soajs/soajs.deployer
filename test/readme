@@ -58,4 +58,16 @@ node . -T nginx -S deploy
 node . -T nginx -S install
 node . -T nginx -S run
 
-certbot --nginx -n --agree-tos -m antoine@soajs.org -d api.soajs.org,www.soajs.org
+certbot --nginx -n --agree-tos -m antoine@soajs.org -d api.soajs.org,www.soajs.org --expand --redirect
+
+certbot renew
+
+### Send certbot Emission/Renewal to background
+$(while :; do certbot renew; sleep 12h; done;) &
+
+### Check for changes in the certificate (i.e renewals or first start) and send this process to background
+mkdir -p /etc/letsencrypt/live/
+$(while inotifywait -e close_write -r /etc/letsencrypt/live/; do nginx -s reload; done) &
+
+### Start nginx with daemon off as our main pid
+nginx -g "daemon off;"
