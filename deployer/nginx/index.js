@@ -273,12 +273,17 @@ const exp = {
 					log('Unable to find email in SOAJS_SSL_CONFIG. Skipping ...');
 					return cb(null, obj);
 				}
-				
-				let commands = ['--nginx', '-n', '--agree-tos', '-m', configuration.email];
-				if (sslDomainStr) {
-					commands = commands.concat(['-d', sslDomainStr]);
-					log(`The list of domains to create certifications for is: ${sslDomainStr}`);
+				if (!sslDomainStr) {
+					log('Unable to find any domain. Skipping ...');
+					return cb(null, obj);
 				}
+				
+				log(`The list of domains to create certifications for is: ${sslDomainStr}`);
+				let commands = ['--nginx', '-n', '--agree-tos', '-m', configuration.email, '--expand', '-d', sslDomainStr];
+				if (configuration.redirect) {
+					commands.push("--redirect");
+				}
+				
 				const certbot = spawn('certbot', commands, {stdio: 'inherit'});
 				
 				certbot.on('data', (data) => {
