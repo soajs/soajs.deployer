@@ -139,12 +139,12 @@ function execute(options) {
 	}
 	
 	function deployNginx(options) {
-		utils.repo.get("SOAJS_GIT_ACC_INFO", "SOAJS_GIT_REPO_INFO", (error, repo) => {
+		//utils.repo.get("SOAJS_GIT_ACC_INFO", "SOAJS_GIT_REPO_INFO", (error, repo) => {
 			options.nginx = config.nginx;
-			if (repo) {
+		//	if (repo) {
 				options.accelerateClone = false;
-				options.git = repo.git;
-			}
+		//		options.git = repo.git;
+		//	}
 			const nginx = require('./nginx');
 			if (options.step) {
 				if (options.step === 'deploy') {
@@ -164,7 +164,7 @@ function execute(options) {
 					});
 				});
 			}
-		});
+		//});
 	}
 	
 }

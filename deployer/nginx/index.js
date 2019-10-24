@@ -14,7 +14,6 @@ const utils = require('../utils');
 const async = require("async");
 const gateway = require('./lib/gateway.js');
 const console = require('./lib/console.js');
-const site = require('./lib/site.js');
 const sites = require('./lib/sites.js');
 
 /**
@@ -45,6 +44,7 @@ const exp = {
 		let installFnArray = [(cb) => {
 			cb(null, options);
 		}];
+		/*
 		installFnArray.push((obj, cb) => {
 			if (obj.git) {
 				let cloneOptions = {
@@ -59,12 +59,34 @@ const exp = {
 				log('Skipping site repo no git information found ...');
 			}
 		});
+		*/
+		installFnArray.push((obj, cb) => {
+			if (process.env.SOAJS_SITES_CONFIG) {
+				let sitesObj = null;
+				try {
+					sitesObj = JSON.parse(process.env.SOAJS_SITES_CONFIG);
+				} catch (e) {
+					log('Unable to parse the content of SOAJS_SITES_CONFIG ...');
+					log(e);
+					return cb(null, obj);
+				}
+				let config = {
+					"content": 'nginx',
+					"type": 'sites'
+				};
+				sites.sitesDeploy(obj, config, sitesObj, (error) => {
+					return cb(error, obj);
+				});
+			} else {
+				return cb(null, obj);
+			}
+		});
 		installFnArray.push((obj, cb) => {
 			let config = {
 				"content": 'nginx',
 				"type": 'sites'
 			};
-			sites.deploy(obj, config, (error) => {
+			sites.customDeploy(obj, config, (error) => {
 				return cb(error, obj);
 			});
 		});
@@ -151,6 +173,7 @@ const exp = {
 				return cb(null, obj);
 			}
 		});
+		/*
 		installFnArray.push((obj, cb) => {
 			if (process.env.SOAJS_SITE_CONFIG) {
 				let configuration = null;
@@ -169,6 +192,7 @@ const exp = {
 				return cb(null, obj);
 			}
 		});
+		*/
 		installFnArray.push((obj, cb) => {
 			let config = {
 				"content": 'nginx',
@@ -196,12 +220,32 @@ const exp = {
 			});
 		});
 		installFnArray.push((obj, cb) => {
+			if (process.env.SOAJS_SITES_CONFIG) {
+				let sitesObj = null;
+				try {
+					sitesObj = JSON.parse(process.env.SOAJS_SITES_CONFIG);
+				} catch (e) {
+					log('Unable to parse the content of SOAJS_SITES_CONFIG ...');
+					log(e);
+					return cb(null, obj);
+				}
+				let config = {
+					"content": 'nginx',
+					"type": 'sites'
+				};
+				sites.sitesInstall(obj, config, sitesObj, (error) => {
+					return cb(error, obj);
+				});
+			} else {
+				return cb(null, obj);
+			}
+		});
+		installFnArray.push((obj, cb) => {
 			let config = {
 				"content": 'nginx',
 				"type": 'sites'
 			};
-			sites.install(obj, config, (error) => {
-				
+			sites.customInstall(obj, config, (error) => {
 				return cb(error, obj);
 			});
 		});
@@ -225,7 +269,7 @@ const exp = {
 					options.sslDomain = options.sslDomain.concat(configuration.domains);
 				}
 				if (options.sslDomain.length > 0) {
-						sslDomainStr = options.sslDomain.join(",");
+					sslDomainStr = options.sslDomain.join(",");
 				}
 				
 				if (!configuration.email) {
@@ -235,7 +279,7 @@ const exp = {
 				
 				let commands = ['--nginx', '-n', '--agree-tos', '-m', configuration.email];
 				if (sslDomainStr) {
-					commands = commands.concat (['-d', sslDomainStr]);
+					commands = commands.concat(['-d', sslDomainStr]);
 					log(`The list of domains to create certifications for is: ${sslDomainStr}`);
 				}
 				const certbot = spawn('certbot', commands, {stdio: 'inherit'});
@@ -250,7 +294,7 @@ const exp = {
 				});
 				certbot.on('error', (error) => {
 					log(`SSL process failed with error: ${error}`);
-					return cb(error);
+					return cb(null, obj);
 				});
 			}
 			else {
