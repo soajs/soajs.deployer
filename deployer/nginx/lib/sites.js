@@ -88,10 +88,10 @@ let lib = {
 				let siteConfig = {
 					"location": path.join(options.paths.nginx.conf, location),
 					"root": oneSite.conf.folder,
-					"domain": oneSite.conf.domain,
+					"domains": oneSite.conf.domains,
 				};
-				if (oneSite.conf.domain) {
-					options.sslDomain.push(oneSite.conf.domain);
+				if (oneSite.conf.domains) {
+					options.sslDomain = options.sslDomain.concat(oneSite.conf.domains);
 				}
 				site.write(siteConfig);
 				return callback(null);

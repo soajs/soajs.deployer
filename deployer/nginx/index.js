@@ -262,9 +262,6 @@ const exp = {
 				}
 				let sslDomainStr = null;
 				
-				if (!options.sslDomain || !Array.isArray(options.sslDomain)) {
-					options.sslDomain = [];
-				}
 				if (configuration && configuration.domains && Array.isArray(configuration.domains) && configuration.domains.length > 0) {
 					options.sslDomain = options.sslDomain.concat(configuration.domains);
 				}

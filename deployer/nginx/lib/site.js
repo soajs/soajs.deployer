@@ -26,12 +26,15 @@ let lib = {
 	 * @returns {*}
 	 */
 	"write": (options) => {
+		if (options && options.domains && Array.isArray(options.domains)) {
+			options.domain = options.domains.join(" ");
+		}
 		if (!options.location || !options.domain || !options.root) {
 			log('Cannot create site configuration, missing information: location [' + options.location + '], domain[' + options.domain + '], and root[' + options.root + ']');
 			return (false);
 		}
 		log('Writing ' + options.domain + '.conf in ' + options.location);
-		let wstream = fs.createWriteStream(path.normalize(options.location + '/' + options.domain + '.conf'));
+		let wstream = fs.createWriteStream(path.normalize(options.location + '/' + options.domains[0] + '.conf'));
 		
 		wstream.write("server {\n");
 		wstream.write("  listen               80;\n");
@@ -55,7 +58,7 @@ let lib = {
 		let location = "/sites-enabled/";
 		if (configuration && Array.isArray(configuration)) {
 			for (let i = 0; i < configuration.length; i++) {
-				if (configuration[i].domain) {
+				if (configuration[i].domains && Array.isArray(configuration[i].domains)) {
 					if (!configuration[i].folder) {
 						configuration[i].folder = "/";
 					}
@@ -66,9 +69,9 @@ let lib = {
 					lib.write({
 						"location": path.join(options.paths.nginx.conf, location),
 						"root": configuration[i].folder,
-						"domain": configuration[i].domain
+						"domains": configuration[i].domains
 					});
-					options.sslDomain.push(configuration[i].domain);
+					options.sslDomain = options.sslDomain.concat(configuration[i].domain);
 				}
 			}
 			return cb();
