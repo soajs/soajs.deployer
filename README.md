@@ -13,12 +13,13 @@ Path | Description
 
 #### Source code repository
 These environment variables works for nodejs and golang
+NOTE: if provider is equal to bitbucket then the domain can by bitbucket.org for SaaS or the domain for your enterprise bitbucket installation
 
 ENV Variable | Description | Default | Example
 --- | ----- | :---: | ---
 SOAJS_GIT_ACC_INFO | A stringified JSON object | null | '{"token":null,"provider":"bitbucket","owner":"soajs","domain":"bitbucket.org"}'
 SOAJS_GIT_REPO_INFO | A stringified JSON object | null | '{"repo":"soajs.deployer.example.config","branch":"master","commit":null}'
-NOTE: if provider is equal to bitbucket then the domain can by bitbucket.org for SaaS or the domain for your enterprise bitbucket installation
+
 
 ### Golang
 The deployment path of golang source code is @[/go/src/REPO] where [REPO] is the value set @ SOAJS_GIT_REPO_INFO
