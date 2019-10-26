@@ -58,6 +58,9 @@ node . -T nginx -S deploy
 node . -T nginx -S install
 node . -T nginx -S run
 
+
+//CERTBOT
+
 certbot --nginx -n --agree-tos -m antoine@soajs.org -d api.soajs.org,www.soajs.org --expand --redirect
 
 certbot renew
