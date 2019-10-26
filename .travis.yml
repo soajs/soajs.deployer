@@ -51,4 +51,7 @@ jobs:
     - docker tag deployer_nginx:latest ${DOCKER_USERNAME}/nginxTest:${MAJOR_VERSION}.x
 
     - docker images
-    - docker push ${DOCKER_USERNAME}/multitenant
+
+    - docker push ${DOCKER_USERNAME}/go
+    - docker push ${DOCKER_USERNAME}/node
+    - docker push ${DOCKER_USERNAME}/nginxTest
