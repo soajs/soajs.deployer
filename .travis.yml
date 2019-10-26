@@ -43,12 +43,14 @@ jobs:
     - docker build -t deployer_node -f Dockerfile_node .
     - docker build -t deployer_nginx -f Dockerfile_nginx .
 
-    - docker tag deployer_go:latest ${$DOCKER_USERNAME}/go:${PACKAGE_VERSION}
-    - docker tag deployer_go:latest ${DOCKER_USERNAME}/go:${MAJOR_VERSION}.x
-    - docker tag deployer_node:latest ${$DOCKER_USERNAME}/node:${PACKAGE_VERSION}
-    - docker tag deployer_node:latest ${DOCKER_USERNAME}/node:${MAJOR_VERSION}.x
-    - docker tag deployer_nginx:latest ${$DOCKER_USERNAME}/nginxTest:${PACKAGE_VERSION}
-    - docker tag deployer_nginx:latest ${DOCKER_USERNAME}/nginxTest:${MAJOR_VERSION}.x
+    - docker tag deployer_go:latest soajsorg/go:${PACKAGE_VERSION}
+    - docker tag deployer_go:latest soajsorg/go:${MAJOR_VERSION}.x
+
+    - docker tag deployer_node:latest soajsorg/node:${PACKAGE_VERSION}
+    - docker tag deployer_node:latest soajsorg/node:${MAJOR_VERSION}.x
+
+    - docker tag deployer_nginx:latest soajsorg/nginxTest:${PACKAGE_VERSION}
+    - docker tag deployer_nginx:latest soajsorg/nginxTest:${MAJOR_VERSION}.x
 
     - docker images
 
