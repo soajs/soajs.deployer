@@ -1,0 +1,54 @@
+language: node_js
+
+node_js: 8
+
+jobs:
+  include:
+
+  - stage: install, check code style and coverage
+    services:
+    - mongodb
+    env:
+    - CXX=g++-4.8
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-4.8
+      hosts:
+      - localhost
+    before_script:
+    - npm install -g grunt-cli
+    - sleep 10
+    script:
+    - grunt
+
+  - stage: Publish to npm
+    if: branch = master
+    script:
+    - echo "PUBLISH npm"
+
+  - stage: Publish to docker registry
+    if: branch = master
+    script:
+    - echo "PUBLISH docker"
+    - export PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -Fn '{ print $2 }' | sed 's/[n:",]//g' | tr -d '[[:space:]]')
+    - export MAJOR_VERSION=$(echo ${PACKAGE_VERSION} | awk -F. '{ print $1 }')
+    - echo Package version ${PACKAGE_VERSION}
+    - echo Major version ${MAJOR_VERSION}
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+    - docker build -t deployer_go -f Dockerfile_golang .
+    - docker build -t deployer_nodejs -f Dockerfile_nodejs .
+    - docker build -t deployer_nginx -f Dockerfile_nginx .
+
+    - docker tag deployer_go:latest ${$DOCKER_USERNAME}/go:${PACKAGE_VERSION}
+    - docker tag deployer_go:latest ${DOCKER_USERNAME}/go:${MAJOR_VERSION}.x
+    - docker tag deployer_node:latest ${$DOCKER_USERNAME}/node:${PACKAGE_VERSION}
+    - docker tag deployer_node:latest ${DOCKER_USERNAME}/node:${MAJOR_VERSION}.x
+    - docker tag deployer_nginx:latest ${$DOCKER_USERNAME}/nginxTest:${PACKAGE_VERSION}
+    - docker tag deployer_nginx:latest ${DOCKER_USERNAME}/nginxTest:${MAJOR_VERSION}.x
+
+    - docker images
+    - docker push ${DOCKER_USERNAME}/multitenant
