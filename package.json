@@ -24,13 +24,8 @@
   },
   "dependencies": {
     "async": "3.1.0",
-    "commander": "3.0.2",
-    "fs-extra": "8.1.0",
-    "handlebars":"4.4.3",
-    "openssl-wrapper": "0.3.4",
+    "handlebars": "4.4.5",
     "rimraf": "3.0.0",
-    "dockerode": "soajs/dockerode.git",
-    "http-proxy": "1.18.0",
-    "request": "2.88.0"
+    "commander": "3.0.2"
   }
 }
