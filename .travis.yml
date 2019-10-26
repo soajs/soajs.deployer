@@ -39,8 +39,8 @@ jobs:
     - echo Major version ${MAJOR_VERSION}
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
-    - docker build -t deployer_go -f Dockerfile_golang .
-    - docker build -t deployer_nodejs -f Dockerfile_nodejs .
+    - docker build -t deployer_go -f Dockerfile_go .
+    - docker build -t deployer_node -f Dockerfile_node .
     - docker build -t deployer_nginx -f Dockerfile_nginx .
 
     - docker tag deployer_go:latest ${$DOCKER_USERNAME}/go:${PACKAGE_VERSION}
