@@ -60,6 +60,6 @@ jobs:
 
     - docker images
 
-    - docker push ${DOCKER_USERNAME}/go
-    - docker push ${DOCKER_USERNAME}/node
-    - docker push ${DOCKER_USERNAME}/fe
+    - docker push soajsorg/go
+    - docker push soajsorg/node
+    - docker push soajsorg/fe
