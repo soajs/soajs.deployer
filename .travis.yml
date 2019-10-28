@@ -28,6 +28,12 @@ jobs:
     if: branch = master
     script:
     - echo "PUBLISH npm"
+    deploy:
+      provider: npm
+      email: $NPM_EMAIL
+      api_key: $NPM_TOKEN
+      on:
+        branch: master
 
   - stage: Publish to docker registry
     if: branch = master
@@ -39,21 +45,21 @@ jobs:
     - echo Major version ${MAJOR_VERSION}
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
-    - docker build -t soajsorg/go -f Dockerfile_go .
-    - docker build -t soajsorg/node -f Dockerfile_node .
-    - docker build -t soajsorg/nginxtest -f Dockerfile_nginx .
+    - docker build -t deployer_go -f Dockerfile_go .
+    - docker build -t deployer_node -f Dockerfile_node .
+    - docker build -t deployer_nginx -f Dockerfile_nginx .
+
+    - docker tag deployer_go:latest soajsorg/go:${PACKAGE_VERSION}
+    - docker tag deployer_go:latest soajsorg/go:${MAJOR_VERSION}.x
+
+    - docker tag deployer_node:latest soajsorg/node:${PACKAGE_VERSION}
+    - docker tag deployer_node:latest soajsorg/node:${MAJOR_VERSION}.x
+
+    - docker tag deployer_nginx:latest soajsorg/fe:${PACKAGE_VERSION}
+    - docker tag deployer_nginx:latest soajsorg/fe:${MAJOR_VERSION}.x
 
     - docker images
 
-    - docker tag soajsorg/go:latest soajsorg/go:${PACKAGE_VERSION}
-    - docker tag soajsorg/go:latest soajsorg/go:${MAJOR_VERSION}.x
-
-    - docker tag soajsorg/node:latest soajsorg/node:${PACKAGE_VERSION}
-    - docker tag soajsorg/node:latest soajsorg/node:${MAJOR_VERSION}.x
-
-    - docker tag soajsorg/nginxtest:latest soajsorg/nginxtest:${PACKAGE_VERSION}
-    - docker tag soajsorg/nginxtest:latest soajsorg/nginxtest:${MAJOR_VERSION}.x
-
-    - docker push soajsorg/go
-    - docker push soajsorg/node
-    - docker push soajsorg/nginxtest
+    - docker push ${DOCKER_USERNAME}/go
+    - docker push ${DOCKER_USERNAME}/node
+    - docker push ${DOCKER_USERNAME}/fe
