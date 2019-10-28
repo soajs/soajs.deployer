@@ -26,14 +26,14 @@ jobs:
 
   - stage: Publish to npm
     if: branch = master
-      script:
-      - echo "PUBLISH npm"
-      deploy:
-        provider: npm
-        email: $NPM_EMAIL
-        api_key: $NPM_TOKEN
-        on:
-          branch: master
+    script:
+    - echo "PUBLISH npm"
+    deploy:
+      provider: npm
+      email: $NPM_EMAIL
+      api_key: $NPM_TOKEN
+      on:
+        branch: master
 
   - stage: Publish to docker registry
     if: branch = master
