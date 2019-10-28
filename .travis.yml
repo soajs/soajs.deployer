@@ -55,11 +55,11 @@ jobs:
     - docker tag deployer_node:latest soajsorg/node:${PACKAGE_VERSION}
     - docker tag deployer_node:latest soajsorg/node:${MAJOR_VERSION}.x
 
-    - docker tag deployer_nginx:latest soajsorg/nginxTest:${PACKAGE_VERSION}
-    - docker tag deployer_nginx:latest soajsorg/nginxTest:${MAJOR_VERSION}.x
+    - docker tag deployer_nginx:latest soajsorg/fe:${PACKAGE_VERSION}
+    - docker tag deployer_nginx:latest soajsorg/fe:${MAJOR_VERSION}.x
 
     - docker images
 
     - docker push ${DOCKER_USERNAME}/go
     - docker push ${DOCKER_USERNAME}/node
-    - docker push ${DOCKER_USERNAME}/nginxTest
+    - docker push ${DOCKER_USERNAME}/fe
