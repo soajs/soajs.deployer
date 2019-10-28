@@ -45,18 +45,18 @@ jobs:
     - echo Major version ${MAJOR_VERSION}
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
-    - docker build -t deployer_go -f Dockerfile_go .
-    - docker build -t deployer_node -f Dockerfile_node .
-    - docker build -t deployer_nginx -f Dockerfile_nginx .
+    - docker build -t soajsorg/go -f Dockerfile_go .
+    - docker build -t soajsorg/node -f Dockerfile_node .
+    - docker build -t soajsorg/fe -f Dockerfile_nginx .
 
-    - docker tag deployer_go:latest soajsorg/go:${PACKAGE_VERSION}
-    - docker tag deployer_go:latest soajsorg/go:${MAJOR_VERSION}.x
+    - docker tag soajsorg/go:latest soajsorg/go:${PACKAGE_VERSION}
+    - docker tag soajsorg/go:latest soajsorg/go:${MAJOR_VERSION}.x
 
-    - docker tag deployer_node:latest soajsorg/node:${PACKAGE_VERSION}
-    - docker tag deployer_node:latest soajsorg/node:${MAJOR_VERSION}.x
+    - docker tag soajsorg/node:latest soajsorg/node:${PACKAGE_VERSION}
+    - docker tag soajsorg/node:latest soajsorg/node:${MAJOR_VERSION}.x
 
-    - docker tag deployer_nginx:latest soajsorg/fe:${PACKAGE_VERSION}
-    - docker tag deployer_nginx:latest soajsorg/fe:${MAJOR_VERSION}.x
+    - docker tag soajsorg/fe:latest soajsorg/fe:${PACKAGE_VERSION}
+    - docker tag soajsorg/fe:latest soajsorg/fe:${MAJOR_VERSION}.x
 
     - docker images
 
