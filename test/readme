@@ -12,6 +12,7 @@ docker run -i -t --name soajs_deployer_golang deployer_golang su
 docker rm soajs_deployer_nginx
 docker run -i -t --name soajs_deployer_nginx deployer_nginx bash
 
+docker run -i -t --name soajsnode soajsorg/node bash
 
 //GOLANG
 export SOAJS_GIT_ACC_INFO='{"token":null,"provider":"github","owner":"soajs","domain":"github.com"}'
