@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 
+
+certbotRenew(){
+	local domain=$(cat /etc/nginx/domains | awk -F, '{ print $1 }')
+	certbot renew
+	if [[ -f "/opt/soajs/letsencrypt/live/$domain/privkey.pem" ]]; then
+        cp "/opt/soajs/letsencrypt/live/$domain/privkey.pem" /opt/soajs/certificates/privkey.pem
+        cp "/opt/soajs/letsencrypt/live/$domain/fullchain.pem" /opt/soajs/certificates/fullchain.pem
+	fi
+}
+
 if [[ -z "${SOAJS_SSL_CONFIG}" ]]; then
 
-	if [[ ! -f /usr/share/nginx/certificates/fullchain.pem ]]; then
-	    mkdir -p /usr/share/nginx/certificates
+	if [[ ! -f /opt/soajs/certificates/fullchain.pem ]]; then
+	    mkdir -p /opt/soajs/certificates
 	fi
 
-	if [[ ! -f /usr/share/nginx/certificates/fullchain.pem ]]; then
+	if [[ ! -f /opt/soajs/certificates/fullchain.pem ]]; then
 	    openssl dhparam -out /opt/soajs/certificates/dhparam.pem 2048
 		openssl genrsa -out /opt/soajs/certificates/privkey.pem 4096
 		openssl req -new -key /opt/soajs/certificates/privkey.pem -out /opt/soajs/certificates/cert.csr -nodes -subj "/C=PT/ST=World/L=World/O=World/OU=World/CN=World/emailAddress=team@soajs.org"
@@ -14,11 +24,10 @@ if [[ -z "${SOAJS_SSL_CONFIG}" ]]; then
 	fi
 
 	### Send certbot Emission/Renewal to background
-	$(while :; do certbot renew; sleep 12h; done;) &
+	$(while :; do certbotRenew; sleep 12h; done;) &
 
 	### Check for changes in the certificate (i.e renewals or first start) and send this process to background
-	mkdir -p /etc/letsencrypt/live/
-	$(while inotifywait -e close_write -r /etc/letsencrypt/live/; do nginx -s reload; done) &
+	$(while inotifywait -e close_write /opt/soajs/certificates; do nginx -s reload; done) &
 fi
 
 ### Start nginx with daemon off as our main pid
