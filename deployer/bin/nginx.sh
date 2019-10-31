@@ -2,13 +2,15 @@
 
 
 certbotRenew(){
-	local domain=$(cat /etc/nginx/domains | awk -F, '{ print $1 }')
-	if [[ -f "/opt/soajs/letsencrypt/live/$domain/privkey.pem" ]]; then
-		certbot renew
-        cp "/opt/soajs/letsencrypt/live/$domain/privkey.pem" /opt/soajs/certificates/privkey.pem
-        cp "/opt/soajs/letsencrypt/live/$domain/fullchain.pem" /opt/soajs/certificates/fullchain.pem
-    else
-        echo $'Unable to renew certificate, file not found @ /opt/soajs/letsencrypt/live/'${domain}
+	if [ -f "/etc/nginx/domains" ]; then
+		local domain=$(cat /etc/nginx/domains | awk -F, '{ print $1 }')
+		if [ -f "/opt/soajs/letsencrypt/live/$domain/privkey.pem" ]; then
+			certbot renew
+	        cp "/opt/soajs/letsencrypt/live/$domain/privkey.pem" /opt/soajs/certificates/privkey.pem
+	        cp "/opt/soajs/letsencrypt/live/$domain/fullchain.pem" /opt/soajs/certificates/fullchain.pem
+	    else
+	        echo $'Unable to renew certificate, file not found @ /opt/soajs/letsencrypt/live/'${domain}
+		fi
 	fi
 }
 
