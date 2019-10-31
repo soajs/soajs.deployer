@@ -101,28 +101,6 @@ const exp = {
 					return cb(null, obj);
 				}
 				obj.sslConfiguration = configuration;
-				
-				let sslDomainStr = null;
-				
-				if (configuration && configuration.domains && Array.isArray(configuration.domains) && configuration.domains.length > 0) {
-					obj.sslDomain = obj.sslDomain.concat(configuration.domains);
-				}
-				if (obj.sslDomain.length > 0) {
-					sslDomainStr = obj.sslDomain.join(",");
-				}
-				if (sslDomainStr) {
-					let filePath = path.join(obj.paths.nginx.cert, "domains");
-					fs.writeFile(filePath, obj.sslDomain, (error) => {
-						if (error) {
-							log(`An error occurred while writing ${filePath}, for ssl domain ...`);
-							return cb(error, obj);
-						}
-						
-						return cb(null, obj);
-					});
-				} else {
-					return cb(null, obj);
-				}
 			} else {
 				return cb(null, obj);
 			}
@@ -253,6 +231,33 @@ const exp = {
 			sites.customInstall(obj, config, (error) => {
 				return cb(error, obj);
 			});
+		});
+		installFnArray.push((obj, cb) => {
+			if (obj.sslConfiguration) {
+				let sslDomainStr = null;
+				
+				if (obj.sslConfiguration.domains && Array.isArray(obj.sslConfiguration.domains) && obj.sslConfiguration.domains.length > 0) {
+					obj.sslDomain = obj.sslDomain.concat(obj.sslConfiguration.domains);
+				}
+				if (obj.sslDomain.length > 0) {
+					sslDomainStr = obj.sslDomain.join(",");
+				}
+				if (sslDomainStr) {
+					let filePath = path.join(obj.paths.nginx.cert, "domains");
+					fs.writeFile(filePath, obj.sslDomain, (error) => {
+						if (error) {
+							log(`An error occurred while writing ${filePath}, for ssl domain ...`);
+							return cb(error, obj);
+						}
+						
+						return cb(null, obj);
+					});
+				} else {
+					return cb(null, obj);
+				}
+			} else {
+				return cb(null, obj);
+			}
 		});
 		async.waterfall(installFnArray, (err) => {
 			if (err) {
