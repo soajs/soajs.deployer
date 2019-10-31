@@ -14,6 +14,7 @@ const fs = require('fs');
 const path = require('path');
 
 let lib = {
+	
 	/**
 	 * Create api.conf configuration file
 	 * @param options
@@ -21,6 +22,7 @@ let lib = {
 	 *          domain
 	 *          root
 	 *          location
+	 *          ssl
 	 *      }
 	 * @param cb
 	 * @returns {*}
@@ -36,20 +38,44 @@ let lib = {
 		log('Writing ' + options.domain + '.conf in ' + options.location);
 		let wstream = fs.createWriteStream(path.normalize(options.location + '/' + options.domains[0] + '.conf'));
 		
-		wstream.write("server {\n");
-		wstream.write("  listen               80;\n");
-		wstream.write("  server_name          " + options.domain + ";\n");
-		wstream.write("  client_max_body_size 100m;\n");
-		wstream.write("  index  index.html index.htm;\n");
+		if (options.ssl) {
+			wstream.write("server {\n");
+			wstream.write("  listen               443 ssl;\n");
+			wstream.write("  server_name          " + options.domain + ";\n");
+			wstream.write("  client_max_body_size 100m;\n");
+			wstream.write("  index  index.html index.htm;\n");
+			wstream.write("  location / {\n");
+			wstream.write("    root  " + options.root + ";\n");
+			wstream.write("    sendfile       off;\n");
+			wstream.write("    try_files $uri $uri/ /index.html;\n");
+			wstream.write("    ssl_certificate /opt/soajs/certificates/fullchain.pem;\n");
+			wstream.write("    ssl_certificate /opt/soajs/certificates/privkey.pem;\n");
+			wstream.write("    include /etc/nginx/ssl.conf;\n");
+			wstream.write("    ssl_dhparam /opt/soajs/certificates/dhparam.pem;\n");
+			wstream.write("  }\n");
+			wstream.write("}\n");
+		}
 		
-		wstream.write("  location / {\n");
-		wstream.write("    root  " + options.root + ";\n");
-		wstream.write("    sendfile       off;\n");
-		wstream.write("    try_files $uri $uri/ /index.html;\n");
-		
-		wstream.write("  }\n");
-		wstream.write("}\n");
-		
+		if (options.ssl && options.ssl.redirect) {
+			wstream.write("server {\n");
+			wstream.write("  listen               80;\n");
+			wstream.write("  server_name          " + options.domain + ";\n");
+			wstream.write("  client_max_body_size 100m;\n");
+			wstream.write("  rewrite ^/(.*) https://" + options.domains[0] + "/$1 permanent;\n");
+			wstream.write("}\n");
+		} else {
+			wstream.write("server {\n");
+			wstream.write("  listen               80;\n");
+			wstream.write("  server_name          " + options.domain + ";\n");
+			wstream.write("  client_max_body_size 100m;\n");
+			wstream.write("  index  index.html index.htm;\n");
+			wstream.write("  location / {\n");
+			wstream.write("    root  " + options.root + ";\n");
+			wstream.write("    sendfile       off;\n");
+			wstream.write("    try_files $uri $uri/ /index.html;\n");
+			wstream.write("  }\n");
+			wstream.write("}\n");
+		}
 		wstream.end();
 		return (true);
 	},

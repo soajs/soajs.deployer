@@ -1,7 +1,7 @@
 
 //IMAGES
-docker build -t deployer_golang -f Dockerfile_golang .
-docker build -t deployer_nodejs -f Dockerfile_nodejs .
+docker build -t deployer_golang -f Dockerfile_go .
+docker build -t deployer_nodejs -f Dockerfile_node .
 docker build -t deployer_nginx -f Dockerfile_nginx .
 
 //CONTAINERS

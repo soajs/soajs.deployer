@@ -8,6 +8,7 @@ RUN apt-get update && \
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get install --fix-missing -y postfix python make g++
 
+ENV SOAJS_DEPLOYER_TYPE=nodejs
 ENV NODE_ENV=production
 RUN mkdir -p /opt/soajs/soajs.deployer/node_modules
 RUN mkdir -p /opt/soajs/tmp

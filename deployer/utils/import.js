@@ -194,7 +194,7 @@ const importer = {
 			let filePath = path.join(config.target, oneFile.name);
 			fs.writeFile(filePath, oneFile.data, (error) => {
 				if (error) {
-					log(`An error occured while writing ${filePath}, skipping file ...`);
+					log(`An error occurred while writing ${filePath}, skipping file ...`);
 					return callback(error);
 				}
 				
