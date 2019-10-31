@@ -38,11 +38,11 @@ let certbot = {
 		
 		certbotProcess.on('close', (code) => {
 			log(`Certbot renew process exited with code: ${code}`);
-			return cb(null, obj);
+			return cb(null);
 		});
 		certbotProcess.on('error', (error) => {
 			log(`Certbot renew process failed with error: ${error}`);
-			return cb(null, obj);
+			return cb(null);
 		});
 	},
 	"install": (options, cb) => {
@@ -59,11 +59,11 @@ let certbot = {
 			certbot.readDomains(options, (error, sslDomainStr) => {
 				if (!configuration.email) {
 					log('Unable to find email in SOAJS_SSL_CONFIG. Skipping ...');
-					return cb(null, obj);
+					return cb(null);
 				}
 				if (!sslDomainStr) {
 					log('Unable to find any domain. Skipping ...');
-					return cb(null, obj);
+					return cb(null);
 				}
 				
 				log(`The list of domains to create certifications for is: ${sslDomainStr}`);
@@ -80,21 +80,21 @@ let certbot = {
 				
 				certbotProcess.on('close', (code) => {
 					log(`Certbot install process exited with code: ${code}`);
-					return cb(null, obj);
+					return cb(null);
 				});
 				certbotProcess.on('error', (error) => {
 					log(`Certbot install process failed with error: ${error}`);
-					return cb(null, obj);
+					return cb(null);
 				});
 			});
 		}
 		else {
-			return cb(null, obj);
+			return cb(null);
 		}
 	},
 	"dryrun": (options, cb) => {
 		
-		return cb();
+		return cb(null);
 	}
 };
 
