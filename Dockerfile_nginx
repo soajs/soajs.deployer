@@ -28,7 +28,7 @@ WORKDIR /opt/soajs/soajs.deployer/
 COPY . .
 RUN npm install
 
-RUN chmod 755 /opt/soajs/soajs.deployer/deployer/bin/nginx.sh
+RUN chmod 755 /opt/soajs/soajs.deployer/deployer/bin/*.sh
 
 WORKDIR /opt/soajs/soajs.deployer/deployer/
 
