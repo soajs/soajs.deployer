@@ -11,8 +11,12 @@
 const config = {
 	
 	"deploy": {
-		"types": ['nginx', 'nodejs', 'golang'],
-		"steps": ['deploy', 'install', 'run']
+		"types": ['nginx', 'nodejs', 'golang', 'certbot'],
+		"steps": {
+			'nginx': ['deploy', 'install', 'run', 'certinstall', 'certrenew', 'certdryrun'],
+			'nodejs': ['deploy', 'install', 'run'],
+			'golang': ['deploy', 'install', 'run']
+		}
 	},
 	
 	"paths": {
@@ -28,7 +32,8 @@ const config = {
 		},
 		"nginx": {
 			"site": '/opt/soajs/site/',
-			"conf": process.env.SOAJS_NX_LOC || '/etc/nginx/'
+			"conf": process.env.SOAJS_NX_LOC || '/etc/nginx/',
+			"cert": '/opt/soajs/certificates/'
 		}
 	},
 	

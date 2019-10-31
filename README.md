@@ -34,6 +34,8 @@ SOAJS_SRV_MAIN | The main file for nodejs application | . | app.js
 #### Configuration repository
 SOAJS deployer allows you to add a configuration content from a git repository. This repository has a working example [https://github.com/soajs/soajs.deployer.example.config]
 
+if you end up adding your own nginx.con make sure you have teh following [worker_processes  1; daemon off;]
+
 ENV Variable | Description | Default | Example
 --- | ----- | :---: | ---
 SOAJS_ENV | The environment where you are deploying | dev |
@@ -42,6 +44,9 @@ SOAJS_CONFIG_REPO_INFO | A stringified JSON object | null | '{"repo":"soajs.depl
 
 #### NGINX
 The configuration path of nginx is /etc/nginx/, if you have a custom location you can set the SOAJS_NX_LOC
+
+The certificates path is /opt/soajs/certificates/ where you will find [dhparam.pem  fullchain.pem  privkey.pem]
+
 Please note that there is no need to do any configuration regarding SSL, it is done automatically when you set SOAJS_SSL_CONFIG
 
 ENV Variable | Description | Default | Example
@@ -58,6 +63,7 @@ ENV Variable | Description | Default | Example
 SOAJS_ENV | The environment where you are deploying | dev | dev
 SOAJS_PROFILE_LOC | The profile location. this is needed when you deploy a soajs service | /opt/soajs/profiles/ |
 SOAJS_REGISTRY_API | Where is the gateway of this env to fetch registry from. this is needed when you deploy a service behind SOAJS Gateway | BLANK | "192.168.5.1:5000"
+SOAJS_DEPLOYER_TYPE | To restrict only a type to be allowed | |
 
 ### License
 *Copyright SOAJS All Rights Reserved.*

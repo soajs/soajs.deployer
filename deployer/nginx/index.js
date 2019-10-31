@@ -15,6 +15,8 @@ const async = require("async");
 const gateway = require('./lib/gateway.js');
 const console = require('./lib/console.js');
 const sites = require('./lib/sites.js');
+const fs = require('fs');
+const path = require('path');
 
 /**
  * Function that runs nginx service and prints logs to stdout
@@ -44,22 +46,6 @@ const exp = {
 		let installFnArray = [(cb) => {
 			cb(null, options);
 		}];
-		/*
-		installFnArray.push((obj, cb) => {
-			if (obj.git) {
-				let cloneOptions = {
-					"clonePath": obj.paths.nginx.site,
-					"accelerateClone": obj.accelerateClone,
-					"git": obj.git,
-				};
-				utils.clone(cloneOptions, (error) => {
-					cb(error, obj);
-				});
-			} else {
-				log('Skipping site repo no git information found ...');
-			}
-		});
-		*/
 		installFnArray.push((obj, cb) => {
 			if (process.env.SOAJS_SITES_CONFIG) {
 				let sitesObj = null;
@@ -173,26 +159,6 @@ const exp = {
 				return cb(null, obj);
 			}
 		});
-		/*
-		installFnArray.push((obj, cb) => {
-			if (process.env.SOAJS_SITE_CONFIG) {
-				let configuration = null;
-				try {
-					configuration = JSON.parse(process.env.SOAJS_SITE_CONFIG);
-				} catch (e) {
-					log('Unable to parse the content of SOAJS_SITE_CONFIG ...');
-					log(e);
-					return cb(null, obj);
-				}
-				site.process(configuration, obj, () => {
-					return cb(null, obj);
-				});
-			}
-			else {
-				return cb(null, obj);
-			}
-		});
-		*/
 		installFnArray.push((obj, cb) => {
 			let config = {
 				"content": 'nginx',
@@ -219,6 +185,45 @@ const exp = {
 				return cb(null, obj);
 			});
 		});
+		
+		installFnArray.push((obj, cb) => {
+			if (process.env.SOAJS_SSL_CONFIG) {
+				let configuration = null;
+				try {
+					configuration = JSON.parse(process.env.SOAJS_SSL_CONFIG);
+				} catch (e) {
+					log('Unable to parse the content of SOAJS_SSL_CONFIG ...');
+					log(e);
+					return cb(null, obj);
+				}
+				obj.sslConfiguration = configuration;
+				
+				let sslDomainStr = null;
+				
+				if (configuration && configuration.domains && Array.isArray(configuration.domains) && configuration.domains.length > 0) {
+					obj.sslDomain = obj.sslDomain.concat(configuration.domains);
+				}
+				if (obj.sslDomain.length > 0) {
+					sslDomainStr = obj.sslDomain.join(",");
+				}
+				if (sslDomainStr) {
+					let filePath = path.join(obj.paths.nginx.cert, "domains");
+					fs.writeFile(filePath, obj.sslDomain, (error) => {
+						if (error) {
+							log(`An error occurred while writing ${filePath}, for ssl domain ...`);
+							return cb(error, obj);
+						}
+						
+						return cb(null, obj);
+					});
+				} else {
+					return cb(null, obj);
+				}
+			} else {
+				return cb(null, obj);
+			}
+		});
+		
 		installFnArray.push((obj, cb) => {
 			if (process.env.SOAJS_SITES_CONFIG) {
 				let sitesObj = null;
@@ -248,60 +253,6 @@ const exp = {
 			sites.customInstall(obj, config, (error) => {
 				return cb(error, obj);
 			});
-		});
-		installFnArray.push((obj, cb) => {
-			// certbot
-			if (process.env.SOAJS_SSL_CONFIG) {
-				let configuration = null;
-				try {
-					configuration = JSON.parse(process.env.SOAJS_SSL_CONFIG);
-				} catch (e) {
-					log('Unable to parse the content of SOAJS_SSL_CONFIG ...');
-					log(e);
-					return cb(null, obj);
-				}
-				let sslDomainStr = null;
-				
-				if (configuration && configuration.domains && Array.isArray(configuration.domains) && configuration.domains.length > 0) {
-					options.sslDomain = options.sslDomain.concat(configuration.domains);
-				}
-				if (options.sslDomain.length > 0) {
-					sslDomainStr = options.sslDomain.join(",");
-				}
-				
-				if (!configuration.email) {
-					log('Unable to find email in SOAJS_SSL_CONFIG. Skipping ...');
-					return cb(null, obj);
-				}
-				if (!sslDomainStr) {
-					log('Unable to find any domain. Skipping ...');
-					return cb(null, obj);
-				}
-				
-				log(`The list of domains to create certifications for is: ${sslDomainStr}`);
-				let commands = ['--nginx', '-n', '--agree-tos', '-m', configuration.email, '--expand', '-d', sslDomainStr];
-				if (configuration.redirect) {
-					commands.push("--redirect");
-				}
-				
-				const certbot = spawn('certbot', commands, {stdio: 'inherit'});
-				
-				certbot.on('data', (data) => {
-					log(data.toString());
-				});
-				
-				certbot.on('close', (code) => {
-					log(`SSL process exited with code: ${code}`);
-					return cb(null, obj);
-				});
-				certbot.on('error', (error) => {
-					log(`SSL process failed with error: ${error}`);
-					return cb(null, obj);
-				});
-			}
-			else {
-				return cb(null, obj);
-			}
 		});
 		async.waterfall(installFnArray, (err) => {
 			if (err) {

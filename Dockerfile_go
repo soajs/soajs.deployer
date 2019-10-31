@@ -1,6 +1,7 @@
 FROM golang:1.12.5-alpine
 MAINTAINER SOAJS Team <team@soajs.org>
 
+ENV SOAJS_DEPLOYER_TYPE=golang
 RUN mkdir -p /opt/soajs/soajs.deployer/node_modules
 RUN mkdir -p /opt/soajs/tmp
 RUN apk add --no-cache curl nodejs nodejs-npm git

@@ -18,7 +18,7 @@ const customConfig = require('./customConfig.js');
 script
 	.version(version)
 	.option('-T, --type <type>', '(required): Deployment type')
-	.option('-S, --step [step]', '(optional): Deployment step')
+	.option('-S, --step <step>', '(required): Deployment step')
 	.parse(process.argv);
 
 if (config.deploy.types.indexOf(script.type) === -1) {
@@ -26,10 +26,16 @@ if (config.deploy.types.indexOf(script.type) === -1) {
 	log(`Please choose one of ${config.deploy.types.join(', ')}. Exiting ...`);
 	process.exit();
 }
+if (process.env.SOAJS_DEPLOYER_TYPE) {
+	if (script.type !== process.env.SOAJS_DEPLOYER_TYPE) {
+		log(`SOAJS deployer is restricted with to this type ${process.env.SOAJS_DEPLOYER_TYPE}`);
+		process.exit();
+	}
+}
 if (script.step) {
-	if (config.deploy.steps.indexOf(script.step) === -1) {
+	if (config.deploy.steps[script.type].indexOf(script.step) === -1) {
 		log(`SOAJS deployer is not compatible with the provided step ${script.steps}`);
-		log(`Please choose one of ${config.deploy.steps.join(', ')}. Exiting ...`);
+		log(`Please choose one of ${config.deploy.steps[script.type].join(', ')}. Exiting ...`);
 		process.exit();
 	}
 }
@@ -77,23 +83,14 @@ function execute(options) {
 				options.git = repo.git;
 				const golang = require('./golang');
 				
-				if (options.step) {
-					if (options.step === 'deploy') {
-						golang.deploy(options, exitCb);
-					}
-					if (options.step === 'install') {
-						golang.install(options, exitCb);
-					}
-					if (options.step === 'run') {
-						golang.run(options, exitCb);
-					}
+				if (options.step === 'deploy') {
+					golang.deploy(options, exitCb);
 				}
-				else {
-					golang.deploy(options, () => {
-						golang.install(options, () => {
-							golang.run(options, exitCb);
-						});
-					});
+				if (options.step === 'install') {
+					golang.install(options, exitCb);
+				}
+				if (options.step === 'run') {
+					golang.run(options, exitCb);
 				}
 			} else {
 				log(script.type + ": unable to get repository git information!");
@@ -113,23 +110,14 @@ function execute(options) {
 				options.accelerateClone = false;
 				options.git = repo.git;
 				const nodejs = require('./nodejs');
-				if (options.step) {
-					if (options.step === 'deploy') {
-						nodejs.deploy(options, exitCb);
-					}
-					if (options.step === 'install') {
-						nodejs.install(options, exitCb);
-					}
-					if (options.step === 'run') {
-						nodejs.run(options, exitCb);
-					}
+				if (options.step === 'deploy') {
+					nodejs.deploy(options, exitCb);
 				}
-				else {
-					nodejs.deploy(options, () => {
-						nodejs.install(options, () => {
-							nodejs.run(options, exitCb);
-						});
-					});
+				if (options.step === 'install') {
+					nodejs.install(options, exitCb);
+				}
+				if (options.step === 'run') {
+					nodejs.run(options, exitCb);
 				}
 			} else {
 				log(script.type + ": unable to get repository git information!");
@@ -139,66 +127,49 @@ function execute(options) {
 	}
 	
 	function deployNginx(options) {
-		//utils.repo.get("SOAJS_GIT_ACC_INFO", "SOAJS_GIT_REPO_INFO", (error, repo) => {
-			options.nginx = config.nginx;
-		//	if (repo) {
-				options.accelerateClone = false;
-		//		options.git = repo.git;
-		//	}
-			const nginx = require('./nginx');
-			if (options.step) {
-				if (options.step === 'deploy') {
-					nginx.deploy(options, exitCb);
-				}
-				if (options.step === 'install') {
-					nginx.install(options, exitCb);
-				}
-				if (options.step === 'run') {
-					nginx.run(options, exitCb);
-				}
-			}
-			else {
-				nginx.deploy(options, () => {
-					nginx.install(options, () => {
-						nginx.run(options, exitCb);
-					});
-				});
-			}
-		//});
+		options.nginx = config.nginx;
+		options.accelerateClone = false;
+		const nginx = require('./nginx');
+		const certbot = require('./certbot');
+		if (options.step === 'deploy') {
+			nginx.deploy(options, exitCb);
+		}
+		if (options.step === 'install') {
+			nginx.install(options, exitCb);
+		}
+		if (options.step === 'run') {
+			nginx.run(options, exitCb);
+		}
+		if (options.step === 'certrenew') {
+			certbot.renew(options, exitCb);
+		}
+		if (options.step === 'certinstall') {
+			certbot.install(options, exitCb);
+		}
+		if (options.step === 'certdryrun') {
+			certbot.dryrun(options, exitCb);
+		}
 	}
-	
 }
 
 function deploy() {
 	log(`Deploying a new ${script.type} instance ...`);
-	
 	let options = {"paths": config.paths};
-	if (script.step) {
-		options.step = script.step;
-		if (options.step === 'deploy') {
-			customConfig.deploy(() => {
-				customConfig.getConfig((config, repoPath) => {
-					options.config = config;
-					options.configRepoPath = repoPath;
-					execute(options);
-				});
-			});
-		}
-		else {
-			customConfig.getConfig((config, repoPath) => {
-				options.config = config;
-				options.configRepoPath = repoPath;
-				execute(options);
-			});
-		}
-	}
-	else {
+	options.step = script.step;
+	if (options.step === 'deploy') {
 		customConfig.deploy(() => {
 			customConfig.getConfig((config, repoPath) => {
 				options.config = config;
 				options.configRepoPath = repoPath;
 				execute(options);
 			});
+		});
+	}
+	else {
+		customConfig.getConfig((config, repoPath) => {
+			options.config = config;
+			options.configRepoPath = repoPath;
+			execute(options);
 		});
 	}
 }
