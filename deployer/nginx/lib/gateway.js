@@ -51,6 +51,7 @@ let lib = {
 	 *          domain
 	 *          label
 	 *          location
+	 *          ssl
 	 *      }
 	 * @param cb
 	 * @returns {*}
@@ -64,20 +65,48 @@ let lib = {
 		log("Writing  api conf @ " + location);
 		let wstream = fs.createWriteStream(location);
 		
-		wstream.write("server {\n");
-		wstream.write("  listen               80;\n");
-		wstream.write("  server_name          " + options.domain + ";\n");
-		wstream.write("  client_max_body_size 100m;\n");
-		wstream.write("  location / {\n");
-		wstream.write("    proxy_pass 		    http://" + options.label + ";\n");
-		wstream.write("    proxy_set_header   	X-Forwarded-Proto 	    $scheme;\n");
-		wstream.write("    proxy_set_header   	X-Forwarded-For 	    $remote_addr;\n");
-		wstream.write("    proxy_set_header   	Host             		$http_host;\n");
-		wstream.write("    proxy_set_header   	X-NginX-Proxy     	    true;\n");
-		wstream.write("    proxy_set_header   	Connection        	    \"\";\n");
-		wstream.write("  }\n");
-		wstream.write("}\n");
+		if (options.ssl) {
+			wstream.write("server {\n");
+			wstream.write("  listen               443 ssl;\n");
+			wstream.write("  server_name          " + options.domain + ";\n");
+			wstream.write("  client_max_body_size 100m;\n");
+			wstream.write("  location / {\n");
+			wstream.write("    proxy_pass 		    http://" + options.label + ";\n");
+			wstream.write("    proxy_set_header   	X-Forwarded-Proto 	    $scheme;\n");
+			wstream.write("    proxy_set_header   	X-Forwarded-For 	    $remote_addr;\n");
+			wstream.write("    proxy_set_header   	Host             		$http_host;\n");
+			wstream.write("    proxy_set_header   	X-NginX-Proxy     	    true;\n");
+			wstream.write("    proxy_set_header   	Connection        	    \"\";\n");
+			wstream.write("    ssl_certificate /opt/soajs/certificates/fullchain.pem;\n");
+			wstream.write("    ssl_certificate /opt/soajs/certificates/privkey.pem;\n");
+			wstream.write("    include /etc/nginx/ssl.conf;\n");
+			wstream.write("    ssl_dhparam /opt/soajs/certificates/dhparam.pem;\n");
+			wstream.write("  }\n");
+			wstream.write("}\n");
+		}
 		
+		if (options.ssl && options.ssl.redirect) {
+			wstream.write("server {\n");
+			wstream.write("  listen               80;\n");
+			wstream.write("  server_name          " + options.domain + ";\n");
+			wstream.write("  client_max_body_size 100m;\n");
+			wstream.write("  rewrite ^/(.*) https://" + options.domain + "/$1 permanent;\n");
+			wstream.write("}\n");
+		} else {
+			wstream.write("server {\n");
+			wstream.write("  listen               80;\n");
+			wstream.write("  server_name          " + options.domain + ";\n");
+			wstream.write("  client_max_body_size 100m;\n");
+			wstream.write("  location / {\n");
+			wstream.write("    proxy_pass 		    http://" + options.label + ";\n");
+			wstream.write("    proxy_set_header   	X-Forwarded-Proto 	    $scheme;\n");
+			wstream.write("    proxy_set_header   	X-Forwarded-For 	    $remote_addr;\n");
+			wstream.write("    proxy_set_header   	Host             		$http_host;\n");
+			wstream.write("    proxy_set_header   	X-NginX-Proxy     	    true;\n");
+			wstream.write("    proxy_set_header   	Connection        	    \"\";\n");
+			wstream.write("  }\n");
+			wstream.write("}\n");
+		}
 		wstream.end();
 		return cb(true);
 	},
