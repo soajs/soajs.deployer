@@ -3,20 +3,22 @@
 
 certbotRenew(){
 	local domain=$(cat /etc/nginx/domains | awk -F, '{ print $1 }')
-	certbot renew
 	if [[ -f "/opt/soajs/letsencrypt/live/$domain/privkey.pem" ]]; then
+		certbot renew
         cp "/opt/soajs/letsencrypt/live/$domain/privkey.pem" /opt/soajs/certificates/privkey.pem
         cp "/opt/soajs/letsencrypt/live/$domain/fullchain.pem" /opt/soajs/certificates/fullchain.pem
+    else
+        echo $'Unable to renew certificate, file not found @ /opt/soajs/letsencrypt/live/'${domain}
 	fi
 }
 
-if [[ -z "${SOAJS_SSL_CONFIG}" ]]; then
+if [ ! -z "${SOAJS_SSL_CONFIG}" ]; then
 
-	if [[ ! -f /opt/soajs/certificates/fullchain.pem ]]; then
+	if [ ! -f /opt/soajs/certificates/fullchain.pem ]; then
 	    mkdir -p /opt/soajs/certificates
 	fi
 
-	if [[ ! -f /opt/soajs/certificates/fullchain.pem ]]; then
+	if [ ! -f /opt/soajs/certificates/fullchain.pem ]; then
 	    openssl dhparam -out /opt/soajs/certificates/dhparam.pem 2048
 		openssl genrsa -out /opt/soajs/certificates/privkey.pem 4096
 		openssl req -new -key /opt/soajs/certificates/privkey.pem -out /opt/soajs/certificates/cert.csr -nodes -subj "/C=PT/ST=World/L=World/O=World/OU=World/CN=World/emailAddress=team@soajs.org"
