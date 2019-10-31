@@ -38,7 +38,7 @@ const config = {
 	},
 	
 	"nodejs": {
-		"memory": process.env.SOAJS_NODEJS_MEMORY,
+		"memory": process.env.SOAJS_SRV_MEMORY,
 		"main": process.env.SOAJS_SRV_MAIN || '.'
 	},
 	"golang": {},

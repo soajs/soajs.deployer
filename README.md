@@ -28,7 +28,7 @@ The deployment path of nodejs source code is @[/opt/soajs/node_modules/REPO] whe
 
 ENV Variable | Description | Default | Example
 --- | ----- | :---: | ---
-SOAJS_NODEJS_MEMORY | Controle nodejs max_old_space_size the number of megabytes allowed | null | 4096
+SOAJS_SRV_MEMORY | Controle nodejs max_old_space_size the number of megabytes allowed | null | 4096
 SOAJS_SRV_MAIN | The main file for nodejs application | . | app.js
 
 #### Configuration repository
