@@ -90,6 +90,44 @@ const exp = {
 		}];
 		
 		installFnArray.push((obj, cb) => {
+			obj.sslConfiguration = null;
+			if (process.env.SOAJS_SSL_CONFIG) {
+				let configuration = null;
+				try {
+					configuration = JSON.parse(process.env.SOAJS_SSL_CONFIG);
+				} catch (e) {
+					log('Unable to parse the content of SOAJS_SSL_CONFIG ...');
+					log(e);
+					return cb(null, obj);
+				}
+				obj.sslConfiguration = configuration;
+				
+				let sslDomainStr = null;
+				
+				if (configuration && configuration.domains && Array.isArray(configuration.domains) && configuration.domains.length > 0) {
+					obj.sslDomain = obj.sslDomain.concat(configuration.domains);
+				}
+				if (obj.sslDomain.length > 0) {
+					sslDomainStr = obj.sslDomain.join(",");
+				}
+				if (sslDomainStr) {
+					let filePath = path.join(obj.paths.nginx.cert, "domains");
+					fs.writeFile(filePath, obj.sslDomain, (error) => {
+						if (error) {
+							log(`An error occurred while writing ${filePath}, for ssl domain ...`);
+							return cb(error, obj);
+						}
+						
+						return cb(null, obj);
+					});
+				} else {
+					return cb(null, obj);
+				}
+			} else {
+				return cb(null, obj);
+			}
+		});
+		installFnArray.push((obj, cb) => {
 			if (process.env.SOAJS_GATEWAY_CONFIG) {
 				log('Fetching SOAJS Gateway configuration ...');
 				gateway.conf(process.env.SOAJS_GATEWAY_CONFIG, (gatewayConf) => {
@@ -127,7 +165,8 @@ const exp = {
 				gateway.api({
 					"location": obj.paths.nginx.conf + "/sites-enabled/",
 					"domain": obj.gatewayConf.domain,
-					"label": obj.nginx.label
+					"label": obj.nginx.label,
+					"ssl": obj.sslConfiguration
 				}, (done) => {
 					if (done) {
 						log('api.conf created successfully.');
@@ -185,45 +224,6 @@ const exp = {
 				return cb(null, obj);
 			});
 		});
-		
-		installFnArray.push((obj, cb) => {
-			if (process.env.SOAJS_SSL_CONFIG) {
-				let configuration = null;
-				try {
-					configuration = JSON.parse(process.env.SOAJS_SSL_CONFIG);
-				} catch (e) {
-					log('Unable to parse the content of SOAJS_SSL_CONFIG ...');
-					log(e);
-					return cb(null, obj);
-				}
-				obj.sslConfiguration = configuration;
-				
-				let sslDomainStr = null;
-				
-				if (configuration && configuration.domains && Array.isArray(configuration.domains) && configuration.domains.length > 0) {
-					obj.sslDomain = obj.sslDomain.concat(configuration.domains);
-				}
-				if (obj.sslDomain.length > 0) {
-					sslDomainStr = obj.sslDomain.join(",");
-				}
-				if (sslDomainStr) {
-					let filePath = path.join(obj.paths.nginx.cert, "domains");
-					fs.writeFile(filePath, obj.sslDomain, (error) => {
-						if (error) {
-							log(`An error occurred while writing ${filePath}, for ssl domain ...`);
-							return cb(error, obj);
-						}
-						
-						return cb(null, obj);
-					});
-				} else {
-					return cb(null, obj);
-				}
-			} else {
-				return cb(null, obj);
-			}
-		});
-		
 		installFnArray.push((obj, cb) => {
 			if (process.env.SOAJS_SITES_CONFIG) {
 				let sitesObj = null;

@@ -95,7 +95,8 @@ let lib = {
 					lib.write({
 						"location": path.join(options.paths.nginx.conf, location),
 						"root": configuration[i].folder,
-						"domains": configuration[i].domains
+						"domains": configuration[i].domains,
+						"ssl": options.sslConfiguration
 					});
 					options.sslDomain = options.sslDomain.concat(configuration[i].domain);
 				}
@@ -114,7 +115,8 @@ let lib = {
 					"location": path.join(options.paths.nginx.conf, location),
 					"root": configuration.folder,
 					"domain": configuration.domain,
-					"git": options.git
+					"git": options.git,
+					"ssl": options.sslConfiguration
 				});
 				options.sslDomain.push(configuration.domain);
 			}
