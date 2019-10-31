@@ -77,11 +77,11 @@ let lib = {
 			wstream.write("    proxy_set_header   	Host             		$http_host;\n");
 			wstream.write("    proxy_set_header   	X-NginX-Proxy     	    true;\n");
 			wstream.write("    proxy_set_header   	Connection        	    \"\";\n");
-			wstream.write("    ssl_certificate /opt/soajs/certificates/fullchain.pem;\n");
-			wstream.write("    ssl_certificate /opt/soajs/certificates/privkey.pem;\n");
-			wstream.write("    include /etc/nginx/ssl.conf;\n");
-			wstream.write("    ssl_dhparam /opt/soajs/certificates/dhparam.pem;\n");
 			wstream.write("  }\n");
+			wstream.write("  ssl_certificate     /opt/soajs/certificates/fullchain.pem;\n");
+			wstream.write("  ssl_certificate_key /opt/soajs/certificates/privkey.pem;\n");
+			wstream.write("  include             /etc/nginx/ssl.conf;\n");
+			wstream.write("  ssl_dhparam         /opt/soajs/certificates/dhparam.pem;\n");
 			wstream.write("}\n");
 		}
 		

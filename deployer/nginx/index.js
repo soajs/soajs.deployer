@@ -101,6 +101,7 @@ const exp = {
 					return cb(null, obj);
 				}
 				obj.sslConfiguration = configuration;
+				return cb(null, obj);
 			} else {
 				return cb(null, obj);
 			}
