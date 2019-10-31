@@ -2,6 +2,7 @@
 
 
 certbotRenew(){
+    echo $'SOAJS Certbot auto renew ....'
 	if [ -f "/opt/soajs/certificates/domains" ]; then
 		local domain=$(cat /opt/soajs/certificates/domains | awk -F, '{ print $1 }')
 		if [ -f "/opt/soajs/letsencrypt/live/$domain/privkey.pem" ]; then
@@ -15,6 +16,7 @@ certbotRenew(){
 }
 
 if [ ! -z "${SOAJS_SSL_CONFIG}" ]; then
+    echo $'SOAJS_SSL_CONFIG detected ....'
 
 	if [ ! -f /opt/soajs/certificates/fullchain.pem ]; then
 	    mkdir -p /opt/soajs/certificates
