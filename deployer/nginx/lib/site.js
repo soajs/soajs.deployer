@@ -38,8 +38,8 @@ let lib = {
 		log('Writing ' + options.domain + '.conf in ' + options.location);
 		let wstream = fs.createWriteStream(path.normalize(options.location + '/' + options.domains[0] + '.conf'));
 		
+		wstream.write("server {\n");
 		if (options.ssl) {
-			wstream.write("server {\n");
 			wstream.write("  listen               443 ssl;\n");
 			wstream.write("  server_name          " + options.domain + ";\n");
 			wstream.write("  client_max_body_size 100m;\n");
@@ -48,11 +48,11 @@ let lib = {
 			wstream.write("    root  " + options.root + ";\n");
 			wstream.write("    sendfile       off;\n");
 			wstream.write("    try_files $uri $uri/ /index.html;\n");
-			wstream.write("    ssl_certificate /opt/soajs/certificates/fullchain.pem;\n");
-			wstream.write("    ssl_certificate /opt/soajs/certificates/privkey.pem;\n");
-			wstream.write("    include /etc/nginx/ssl.conf;\n");
-			wstream.write("    ssl_dhparam /opt/soajs/certificates/dhparam.pem;\n");
 			wstream.write("  }\n");
+			wstream.write("  ssl_certificate     /opt/soajs/certificates/fullchain.pem;\n");
+			wstream.write("  ssl_certificate_key /opt/soajs/certificates/privkey.pem;\n");
+			wstream.write("  include             /etc/nginx/ssl.conf;\n");
+			wstream.write("  ssl_dhparam         /opt/soajs/certificates/dhparam.pem;\n");
 			wstream.write("}\n");
 		}
 		
