@@ -28,7 +28,7 @@ if (config.deploy.types.indexOf(script.type) === -1) {
 }
 if (process.env.SOAJS_DEPLOYER_TYPE) {
 	if (script.type !== process.env.SOAJS_DEPLOYER_TYPE) {
-		log(`SOAJS deployer is restricted with to this type ${process.env.SOAJS_DEPLOYER_TYPE}`);
+		log(`SOAJS deployer is restricted only to this type ${process.env.SOAJS_DEPLOYER_TYPE}`);
 		process.exit();
 	}
 }
