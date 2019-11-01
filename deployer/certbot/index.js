@@ -15,7 +15,23 @@ const spawn = require('child_process').spawn;
 
 
 let certbot = {
-	
+	"cpcerts": (options, cb) => {
+		let commands = [];
+		let cpcertsExec = path.join(options.paths.deployer.src, 'bin/cpcerts.sh');
+		const cpcertsProcess = spawn(cpcertsExec, commands, {stdio: 'inherit'});
+		
+		cpcertsProcess.on('data', (data) => {
+			log(data.toString());
+		});
+		cpcertsProcess.on('close', (code) => {
+			log(`Certbot cpcerts process exited with code: ${code}`);
+			return cb(null);
+		});
+		cpcertsProcess.on('error', (error) => {
+			log(`Certbot cpcerts process failed with error: ${error}`);
+			return cb(null);
+		});
+	},
 	"readDomains": (options, cb) => {
 		let filePath = path.join(options.paths.nginx.cert, "domains");
 		fs.readFile(filePath, (error, fileData) => {
@@ -26,7 +42,6 @@ let certbot = {
 			return cb(null, fileData);
 		});
 	},
-	
 	"renew": (options, cb) => {
 		let commands = ['renew'];
 		
@@ -80,7 +95,11 @@ let certbot = {
 				
 				certbotProcess.on('close', (code) => {
 					log(`Certbot install process exited with code: ${code}`);
-					return cb(null);
+					if (code === 0) {
+						return certbot.cpcerts(options, cb);
+					} else {
+						return cb(null);
+					}
 				});
 				certbotProcess.on('error', (error) => {
 					log(`Certbot install process failed with error: ${error}`);
