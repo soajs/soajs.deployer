@@ -21,7 +21,7 @@ const config = {
 	
 	"paths": {
 		"deployer": {
-			"src": "/opt/soajs/deployer/",
+			"src": "/opt/soajs/ssoajs.deployer/deployer/",
 			"tmp": "/opt/soajs/tmp/"
 		},
 		"golang": {
@@ -38,7 +38,7 @@ const config = {
 	},
 	
 	"nodejs": {
-		"memory": process.env.SOAJS_NODEJS_MEMORY,
+		"memory": process.env.SOAJS_SRV_MEMORY,
 		"main": process.env.SOAJS_SRV_MAIN || '.'
 	},
 	"golang": {},
