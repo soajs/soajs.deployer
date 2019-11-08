@@ -21,7 +21,7 @@ const config = {
 	
 	"paths": {
 		"deployer": {
-			"src": "/opt/soajs/ssoajs.deployer/deployer/",
+			"src": "/opt/soajs/soajs.deployer/deployer/",
 			"tmp": "/opt/soajs/tmp/"
 		},
 		"golang": {
