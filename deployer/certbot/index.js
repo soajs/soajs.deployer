@@ -86,7 +86,7 @@ let certbot = {
 				let firstDomain = sslDomainStr.split(",");
 				fs.stat(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/privkey.pem", (error, stats) => {
 					log(`The list of domains to create certifications for is: ${sslDomainStr}`);
-					let commands = ['certonly', '--webroot', '-w', '/opt/soajs/certificates/webroot/', '--config-dir', '/opt/soajs/letsencrypt', '-n', '--agree-tos', '-m', configuration.email, '--expand', '-d', sslDomainStr];
+					let commands = ['certonly', '--webroot', '-w', options.paths.nginx.cert + 'webroot/', '--config-dir', options.paths.nginx.letsencrypt, '-n', '--agree-tos', '-m', configuration.email, '--expand', '-d', sslDomainStr];
 					
 					if (options.dryrun) {
 						commands.push('--dry-run');
@@ -107,7 +107,7 @@ let certbot = {
 										log('Copying new certificate ....');
 										fs.copyFileSync(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/privkey.pem", options.paths.nginx.cert + "privkey.pem");
 										fs.copyFileSync(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/fullchain.pem", options.paths.nginx.cert + "fullchain.pem");
-										certbot.reloadNginx (cb);
+										certbot.reloadNginx(cb);
 									} else {
 										log('Keeping existing certificate .... nothing copy!');
 									}
