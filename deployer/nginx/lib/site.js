@@ -49,15 +49,15 @@ let lib = {
 			wstream.write("    sendfile       off;\n");
 			wstream.write("    try_files $uri $uri/ /index.html;\n");
 			wstream.write("  }\n");
-			wstream.write("  ssl_certificate     /opt/soajs/certificates/fullchain.pem;\n");
-			wstream.write("  ssl_certificate_key /opt/soajs/certificates/privkey.pem;\n");
+			wstream.write("  ssl_certificate     " + options.paths.nginx.cert + "fullchain.pem;\n");
+			wstream.write("  ssl_certificate_key " + options.paths.nginx.cert + "privkey.pem;\n");
 			wstream.write("  include             /etc/nginx/ssl.conf;\n");
-			wstream.write("  ssl_dhparam         /opt/soajs/certificates/dhparam.pem;\n");
+			wstream.write("  ssl_dhparam         " + options.paths.nginx.cert + "dhparam.pem;\n");
 			
 			// to be able to renew the certificate
 			if (options.ssl.redirect) {
 				wstream.write("  location /.well-known/acme-challenge/ {\n");
-				wstream.write("    root /opt/soajs/certificates/webroot/;\n");
+				wstream.write("    root " + options.paths.nginx.cert + "webroot/;\n");
 				wstream.write("  }\n");
 			}
 			
@@ -86,7 +86,7 @@ let lib = {
 			// to be able to renew the certificate
 			if (options.ssl) {
 				wstream.write("  location /.well-known/acme-challenge/ {\n");
-				wstream.write("    root /opt/soajs/certificates/webroot/;\n");
+				wstream.write("    root " + options.paths.nginx.cert + "webroot/;\n");
 				wstream.write("  }\n");
 			}
 			
@@ -112,7 +112,8 @@ let lib = {
 						"location": path.join(options.paths.nginx.conf, location),
 						"root": configuration[i].folder,
 						"domains": configuration[i].domains,
-						"ssl": options.sslConfiguration
+						"ssl": options.sslConfiguration,
+						"paths": options.paths
 					});
 					options.sslDomain = options.sslDomain.concat(configuration[i].domain);
 				}
@@ -131,8 +132,8 @@ let lib = {
 					"location": path.join(options.paths.nginx.conf, location),
 					"root": configuration.folder,
 					"domain": configuration.domain,
-					"git": options.git,
-					"ssl": options.sslConfiguration
+					"ssl": options.sslConfiguration,
+					"paths": options.paths
 				});
 				options.sslDomain.push(configuration.domain);
 			}

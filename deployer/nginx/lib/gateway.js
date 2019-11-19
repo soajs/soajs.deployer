@@ -78,15 +78,15 @@ let lib = {
 			wstream.write("    proxy_set_header   	X-NginX-Proxy     	    true;\n");
 			wstream.write("    proxy_set_header   	Connection        	    \"\";\n");
 			wstream.write("  }\n");
-			wstream.write("  ssl_certificate     /opt/soajs/certificates/fullchain.pem;\n");
-			wstream.write("  ssl_certificate_key /opt/soajs/certificates/privkey.pem;\n");
+			wstream.write("  ssl_certificate     " + options.paths.nginx.cert + "fullchain.pem;\n");
+			wstream.write("  ssl_certificate_key " + options.paths.nginx.cert + "privkey.pem;\n");
 			wstream.write("  include             /etc/nginx/ssl.conf;\n");
-			wstream.write("  ssl_dhparam         /opt/soajs/certificates/dhparam.pem;\n");
+			wstream.write("  ssl_dhparam         " + options.paths.nginx.cert + "dhparam.pem;\n");
 			
 			// to be able to renew the certificate
 			if (options.ssl.redirect) {
 				wstream.write("  location /.well-known/acme-challenge/ {\n");
-				wstream.write("    root /opt/soajs/certificates/webroot/;\n");
+				wstream.write("    root " + options.paths.nginx.cert + "webroot/;\n");
 				wstream.write("  }\n");
 			}
 			
@@ -117,7 +117,7 @@ let lib = {
 			// to be able to renew the certificate
 			if (options.ssl) {
 				wstream.write("  location /.well-known/acme-challenge/ {\n");
-				wstream.write("    root /opt/soajs/certificates/webroot/;\n");
+				wstream.write("    root " + options.paths.nginx.cert + "webroot/;\n");
 				wstream.write("  }\n");
 			}
 			

@@ -1,7 +1,7 @@
 {
   "name": "soajs.deployer",
   "description": "SOAJS Deployer",
-  "version": "3.0.8",
+  "version": "3.0.10",
   "author": {
     "name": "SOAJS Team",
     "email": "team@soajs.org"
@@ -24,8 +24,8 @@
   },
   "dependencies": {
     "async": "3.1.0",
-    "handlebars": "4.4.5",
+    "handlebars": "4.5.3",
     "rimraf": "3.0.0",
-    "commander": "3.0.2"
+    "commander": "4.0.1"
   }
 }

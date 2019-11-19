@@ -22,7 +22,7 @@ ENV NODE_ENV=production
 RUN mkdir -p /opt/soajs/soajs.deployer/node_modules
 RUN mkdir -p /opt/soajs/tmp
 RUN mkdir -p /opt/soajs/certificates/webroot/
-RUN mkdir -p /opt/soajs/letsencrypt/
+RUN mkdir -p /opt/soajs/certificates/letsencrypt/
 
 WORKDIR /opt/soajs/soajs.deployer/
 COPY . .

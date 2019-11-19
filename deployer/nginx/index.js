@@ -145,7 +145,8 @@ const exp = {
 					"location": obj.paths.nginx.conf + "/sites-enabled/",
 					"domain": obj.gatewayConf.domain,
 					"label": obj.nginx.label,
-					"ssl": obj.sslConfiguration
+					"ssl": obj.sslConfiguration,
+					"paths": obj.paths
 				}, (done) => {
 					if (done) {
 						log('api.conf created successfully.');

@@ -89,7 +89,8 @@ let lib = {
 					"location": path.join(options.paths.nginx.conf, location),
 					"root": oneSite.conf.folder,
 					"domains": oneSite.conf.domains,
-					"ssl": options.sslConfiguration
+					"ssl": options.sslConfiguration,
+					"paths": options.paths
 				};
 				if (oneSite.conf.domains) {
 					options.sslDomain = options.sslDomain.concat(oneSite.conf.domains);
