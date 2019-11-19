@@ -72,7 +72,7 @@ function execute(options) {
 	 */
 	
 	function deployGolang(options) {
-		utils.repo.get("SOAJS_GIT_ACC_INFO", "SOAJS_GIT_REPO_INFO", (error, repo) => {
+		utils.repo.getRepo((error, repo) => {
 			if (error) {
 				log(script.type + ": git error - " + error);
 				exitCb();
@@ -100,7 +100,7 @@ function execute(options) {
 	}
 	
 	function deployNodejs(options) {
-		utils.repo.get("SOAJS_GIT_ACC_INFO", "SOAJS_GIT_REPO_INFO", (error, repo) => {
+		utils.repo.getRepo((error, repo) => {
 			if (error) {
 				log(script.type + ": git error - " + error);
 				exitCb();

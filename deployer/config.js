@@ -33,7 +33,8 @@ const config = {
 		"nginx": {
 			"site": '/opt/soajs/site/',
 			"conf": process.env.SOAJS_NX_LOC || '/etc/nginx/',
-			"cert": '/opt/soajs/certificates/'
+			"cert": '/opt/soajs/certificates/',
+			"letsencrypt": "/opt/soajs/letsencrypt/"
 		}
 	},
 	

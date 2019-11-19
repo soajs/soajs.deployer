@@ -13,28 +13,30 @@ const path = require('path');
 const log = require('util').log;
 const spawn = require('child_process').spawn;
 
+function datesEqual(a, b) {
+	return !(a > b || b > a);
+}
 
 let certbot = {
-	"cpcerts": (options, cb) => {
-		let commands = [];
-		let cpcertsExec = path.join(options.paths.deployer.src, 'bin/cpcerts.sh');
-		const cpcertsProcess = spawn(cpcertsExec, commands, {stdio: 'inherit'});
+	"reloadNginx": (cb) => {
+		let commands = ['-s', 'reload'];
+		const process = spawn('nginx', commands, {stdio: 'inherit'});
 		
-		cpcertsProcess.on('data', (data) => {
+		process.on('data', (data) => {
 			log(data.toString());
 		});
-		cpcertsProcess.on('close', (code) => {
-			log(`Certbot cpcerts process exited with code: ${code}`);
+		process.on('close', (code) => {
+			log(`Nginx reload process exited with code: ${code}`);
 			return cb(null);
 		});
-		cpcertsProcess.on('error', (error) => {
-			log(`Certbot cpcerts process failed with error: ${error}`);
+		process.on('error', (error) => {
+			log(`Nginx reload process failed with error: ${error}`);
 			return cb(null);
 		});
 	},
 	"readDomains": (options, cb) => {
 		let filePath = path.join(options.paths.nginx.cert, "domains");
-		fs.readFile(filePath, (error, fileData) => {
+		fs.readFile(filePath, 'utf8', (error, fileData) => {
 			if (error) {
 				log(`An error occurred while reading ${filePath} ...`);
 				return cb(error, null);
@@ -43,21 +45,21 @@ let certbot = {
 		});
 	},
 	"renew": (options, cb) => {
-		let commands = ['renew'];
-		
-		const certbotProcess = spawn('certbot', commands, {stdio: 'inherit'});
-		
-		certbotProcess.on('data', (data) => {
-			log(data.toString());
-		});
-		
-		certbotProcess.on('close', (code) => {
-			log(`Certbot renew process exited with code: ${code}`);
-			return cb(null);
-		});
-		certbotProcess.on('error', (error) => {
-			log(`Certbot renew process failed with error: ${error}`);
-			return cb(null);
+		certbot.readDomains(options, (error, sslDomainStr) => {
+			if (!sslDomainStr) {
+				log('Unable to find any domain. Skipping ...');
+				return cb(null);
+			}
+			let firstDomain = sslDomainStr.split(",");
+			fs.stat(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/privkey.pem", (error, stats) => {
+				if (!error && stats) {
+					certbot.install(options, cb);
+				}
+				else {
+					log('Nothing to renew. Skipping ...');
+					return cb(null);
+				}
+			});
 		});
 	},
 	"install": (options, cb) => {
@@ -68,7 +70,7 @@ let certbot = {
 			} catch (e) {
 				log('Unable to parse the content of SOAJS_SSL_CONFIG ...');
 				log(e);
-				return cb(null, options);
+				return cb(null);
 			}
 			
 			certbot.readDomains(options, (error, sslDomainStr) => {
@@ -81,29 +83,47 @@ let certbot = {
 					return cb(null);
 				}
 				
-				log(`The list of domains to create certifications for is: ${sslDomainStr}`);
-				let commands = ['certonly', '--nginx', '--config-dir', '/opt/soajs/letsencrypt', '-n', '--agree-tos', '-m', configuration.email, '--expand', '-d', sslDomainStr];
-				if (configuration.redirect) {
-					commands.push("--redirect");
-				}
-				
-				const certbotProcess = spawn('certbot', commands, {stdio: 'inherit'});
-				
-				certbotProcess.on('data', (data) => {
-					log(data.toString());
-				});
-				
-				certbotProcess.on('close', (code) => {
-					log(`Certbot install process exited with code: ${code}`);
-					if (code === 0) {
-						return certbot.cpcerts(options, cb);
-					} else {
-						return cb(null);
+				let firstDomain = sslDomainStr.split(",");
+				fs.stat(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/privkey.pem", (error, stats) => {
+					log(`The list of domains to create certifications for is: ${sslDomainStr}`);
+					let commands = ['certonly', '--webroot', '-w', '/opt/soajs/certificates/webroot/', '--config-dir', '/opt/soajs/letsencrypt', '-n', '--agree-tos', '-m', configuration.email, '--expand', '-d', sslDomainStr];
+					
+					if (options.dryrun) {
+						commands.push('--dry-run');
 					}
-				});
-				certbotProcess.on('error', (error) => {
-					log(`Certbot install process failed with error: ${error}`);
-					return cb(null);
+					
+					const certbotProcess = spawn('certbot', commands, {stdio: 'inherit'});
+					
+					certbotProcess.on('data', (data) => {
+						log(data.toString());
+					});
+					
+					certbotProcess.on('close', (code) => {
+						log(`Certbot install process exited with code: ${code}`);
+						if (code === 0 && !(options.dryrun)) {
+							fs.stat(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/privkey.pem", (newerror, newstats) => {
+								if (!error && !newerror && newstats && stats) {
+									if (!datesEqual(newstats.ctime, stats.ctime)) {
+										log('Copying new certificate ....');
+										fs.copyFileSync(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/privkey.pem", options.paths.nginx.cert + "privkey.pem");
+										fs.copyFileSync(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/fullchain.pem", options.paths.nginx.cert + "fullchain.pem");
+										certbot.reloadNginx (cb);
+									} else {
+										log('Keeping existing certificate .... nothing copy!');
+									}
+									return cb(null);
+								} else {
+									return cb(null);
+								}
+							});
+						} else {
+							return cb(null);
+						}
+					});
+					certbotProcess.on('error', (error) => {
+						log(`Certbot install process failed with error: ${error}`);
+						return cb(null);
+					});
 				});
 			});
 		}
@@ -112,8 +132,8 @@ let certbot = {
 		}
 	},
 	"dryrun": (options, cb) => {
-		
-		return cb(null);
+		options.dryrun = true;
+		certbot.install(options, cb);
 	}
 };
 
