@@ -115,7 +115,7 @@ const lib = {
 		let cloneOptions = null;
 		
 		if (process.env[ACC_ENV_NAME]) {
-			let temp = lib.getACC();
+			let temp = lib.getACC(ACC_ENV_NAME);
 			if (temp) {
 				if (!cloneOptions) {
 					cloneOptions = {"git": {}};
@@ -138,7 +138,7 @@ const lib = {
 			}
 		}
 		if (process.env[REPO_ENV_NAME]) {
-			let temp = lib.getREPO();
+			let temp = lib.getREPO(REPO_ENV_NAME);
 			if (temp) {
 				if (!cloneOptions) {
 					cloneOptions = {"git": {}};
