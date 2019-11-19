@@ -21,7 +21,7 @@ ENV SOAJS_DEPLOYER_TYPE=nginx
 ENV NODE_ENV=production
 RUN mkdir -p /opt/soajs/soajs.deployer/node_modules
 RUN mkdir -p /opt/soajs/tmp
-RUN mkdir -p /opt/soajs/certificates/
+RUN mkdir -p /opt/soajs/certificates/webroot/
 RUN mkdir -p /opt/soajs/letsencrypt/
 
 WORKDIR /opt/soajs/soajs.deployer/

@@ -16,7 +16,7 @@ const config = require('./config.js');
 const lib = {
 	"deploy": (cb) => {
 		log('Looking for configuration repository settings ...');
-		utils.repo.get("SOAJS_CONFIG_ACC_INFO", "SOAJS_CONFIG_REPO_INFO", (error, repo) => {
+		utils.repo.getConfigRepo((error, repo) => {
 			if (!repo) {
 				log('Configuration repository not found');
 				cb();
@@ -39,7 +39,7 @@ const lib = {
 	},
 	"getConfig": (cb) => {
 		log('Try to load custom configuration ...');
-		utils.repo.get("SOAJS_CONFIG_ACC_INFO", "SOAJS_CONFIG_REPO_INFO", (error, repo) => {
+		utils.repo.getConfigRepo((error, repo) => {
 			if (!repo) {
 				log('Custom configuration not found');
 				cb();

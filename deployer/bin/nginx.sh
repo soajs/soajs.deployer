@@ -3,24 +3,13 @@
 
 certbotRenew(){
     echo $'SOAJS Certbot auto renew ....'
-	if [ -f "/opt/soajs/certificates/domains" ]; then
-		local domain=$(cat /opt/soajs/certificates/domains | awk -F, '{ print $1 }')
-		if [ -f "/opt/soajs/letsencrypt/live/$domain/privkey.pem" ]; then
-			certbot renew
-	        cp "/opt/soajs/letsencrypt/live/$domain/privkey.pem" /opt/soajs/certificates/privkey.pem
-	        cp "/opt/soajs/letsencrypt/live/$domain/fullchain.pem" /opt/soajs/certificates/fullchain.pem
-	    else
-	        echo $'Unable to renew certificate, file not found @ /opt/soajs/letsencrypt/live/'${domain}
-		fi
-	fi
+	pushd /opt/soajs/soajs.deployer/deployer/
+	node . -T nginx -S certrenew
+	popd
 }
 
 if [ ! -z "${SOAJS_SSL_CONFIG}" ]; then
     echo $'SOAJS_SSL_CONFIG detected ....'
-
-	if [ ! -f /opt/soajs/certificates/fullchain.pem ]; then
-	    mkdir -p /opt/soajs/certificates
-	fi
 
 	if [ ! -f /opt/soajs/certificates/dhparam.pem ]; then
 	    openssl dhparam -out /opt/soajs/certificates/dhparam.pem 2048
@@ -34,8 +23,6 @@ if [ ! -z "${SOAJS_SSL_CONFIG}" ]; then
 	### Send certbot Emission/Renewal to background
 	$(while :; do certbotRenew; sleep 12h; done;) &
 
-	### Check for changes in the certificate (i.e renewals or first start) and send this process to background
-	$(while inotifywait -e close_write /opt/soajs/certificates/fullchain.pem; do nginx -s reload; done) &
 fi
 
 ### Start nginx with daemon off as our main pid
