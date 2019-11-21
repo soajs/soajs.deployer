@@ -102,8 +102,8 @@ let certbot = {
 						log(`Certbot install process exited with code: ${code}`);
 						if (code === 0 && !(options.dryrun)) {
 							fs.stat(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/privkey.pem", (newerror, newstats) => {
-								if (!error && !newerror && newstats && stats) {
-									if (!datesEqual(newstats.ctime, stats.ctime)) {
+								if (!newerror && newstats) {
+									if (!stats || (stats && !datesEqual(newstats.ctime, stats.ctime))) {
 										log('Copying new certificate ....');
 										fs.copyFileSync(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/privkey.pem", options.paths.nginx.cert + "privkey.pem");
 										fs.copyFileSync(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/fullchain.pem", options.paths.nginx.cert + "fullchain.pem");
