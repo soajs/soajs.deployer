@@ -11,6 +11,8 @@ certbotRenew(){
 if [ ! -z "${SOAJS_SSL_CONFIG}" ]; then
     echo $'SOAJS_SSL_CONFIG detected ....'
 
+	mkdir -p /opt/soajs/certificates/webroot/
+
 	if [ ! -f /opt/soajs/certificates/dhparam.pem ]; then
 	    openssl dhparam -out /opt/soajs/certificates/dhparam.pem 2048
 	fi
