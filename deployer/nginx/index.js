@@ -15,6 +15,7 @@ const async = require("async");
 const gateway = require('./lib/gateway.js');
 const console = require('./lib/console.js');
 const sites = require('./lib/sites.js');
+const site = require('./lib/site.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -107,18 +108,19 @@ const exp = {
 			}
 		});
 		installFnArray.push((obj, cb) => {
-			if (process.env.SOAJS_GATEWAY_CONFIG) {
-				log('Fetching SOAJS Gateway configuration ...');
-				gateway.conf(process.env.SOAJS_GATEWAY_CONFIG, (gatewayConf) => {
-					obj.gatewayConf = gatewayConf;
-					if (obj.gatewayConf && obj.gatewayConf.domain) {
-						obj.sslDomain.push(obj.gatewayConf.domain);
-					}
-					return cb(null, obj);
-				});
-			} else {
+			//if (process.env.SOAJS_GATEWAY_CONFIG) {
+			//	log('Fetching SOAJS Gateway configuration ...');
+			//	gateway.conf(process.env.SOAJS_GATEWAY_CONFIG, (gatewayConf) => {
+			gateway.conf((gatewayConf) => {
+				obj.gatewayConf = gatewayConf;
+				if (obj.gatewayConf && obj.gatewayConf.domain) {
+					obj.sslDomain.push(obj.gatewayConf.domain);
+				}
 				return cb(null, obj);
-			}
+			});
+			//} else {
+			//	return cb(null, obj);
+			//}
 		});
 		installFnArray.push((obj, cb) => {
 			if (obj.gatewayConf) {
@@ -165,7 +167,7 @@ const exp = {
 				
 				log('Update SOAJS console UI with the right ext KEY ...');
 				console.updateConfig({
-					"location": obj.paths.nginx.site + "soajs.dashboard.ui/",
+					"location": obj.paths.nginx.site + obj.paths.nginx.consoleRepo + "/",
 					"domainPrefix": obj.gatewayConf.domainPrefix,
 					"extKey": process.env.SOAJS_EXTKEY
 				}, (error, done) => {
@@ -222,7 +224,17 @@ const exp = {
 					return cb(error, obj);
 				});
 			} else {
-				return cb(null, obj);
+				if (process.env.SOAJS_NX_SITE_DOMAIN) {
+					site.process({
+						"domain": process.env.SOAJS_NX_SITE_DOMAIN,
+						"folder": "/",
+						"repo": obj.paths.nginx.consoleRepo
+					}, obj, () => {
+						return cb(null, obj);
+					});
+				} else {
+					return cb(null, obj);
+				}
 			}
 		});
 		installFnArray.push((obj, cb) => {

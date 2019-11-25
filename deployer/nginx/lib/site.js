@@ -20,6 +20,7 @@ let lib = {
 	 * @param options
 	 *      {
 	 *          domain
+	 *          domains
 	 *          root
 	 *          location
 	 *          ssl
@@ -28,15 +29,20 @@ let lib = {
 	 * @returns {*}
 	 */
 	"write": (options) => {
+		let oneDomain = null;
 		if (options && options.domains && Array.isArray(options.domains)) {
 			options.domain = options.domains.join(" ");
+			oneDomain = options.domains[0];
 		}
 		if (!options.location || !options.domain || !options.root) {
 			log('Cannot create site configuration, missing information: location [' + options.location + '], domain[' + options.domain + '], and root[' + options.root + ']');
 			return (false);
 		}
+		if (!oneDomain) {
+			oneDomain = options.domain;
+		}
 		log('Writing ' + options.domain + '.conf in ' + options.location);
-		let wstream = fs.createWriteStream(path.normalize(options.location + '/' + options.domains[0] + '.conf'));
+		let wstream = fs.createWriteStream(path.normalize(options.location + '/' + oneDomain + '.conf'));
 		
 		wstream.write("server {\n");
 		if (options.ssl) {
@@ -69,7 +75,7 @@ let lib = {
 			wstream.write("  listen               80;\n");
 			wstream.write("  server_name          " + options.domain + ";\n");
 			wstream.write("  client_max_body_size 100m;\n");
-			wstream.write("  rewrite ^/(.*) https://" + options.domains[0] + "/$1 permanent;\n");
+			wstream.write("  rewrite ^/(.*) https://" + oneDomain + "/$1 permanent;\n");
 			wstream.write("}\n");
 		} else {
 			wstream.write("server {\n");
@@ -104,8 +110,8 @@ let lib = {
 					if (!configuration[i].folder) {
 						configuration[i].folder = "/";
 					}
-					if (options && options.git && options.git.repo) {
-						configuration[i].folder = options.git.repo + "/" + configuration[i].folder;
+					if (configuration[i] && configuration[i].repo) {
+						configuration[i].folder = configuration[i].repo + "/" + configuration[i].folder;
 					}
 					configuration[i].folder = path.join(options.paths.nginx.site, configuration[i].folder);
 					lib.write({
@@ -124,8 +130,8 @@ let lib = {
 				if (!configuration.folder) {
 					configuration.folder = "/";
 				}
-				if (options && options.git && options.git.repo) {
-					configuration.folder = options.git.repo + "/" + configuration.folder;
+				if (configuration && configuration.repo) {
+					configuration.folder = configuration.repo + "/" + configuration.folder;
 				}
 				configuration.folder = path.join(options.paths.nginx.site, configuration.folder);
 				lib.write({

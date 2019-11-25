@@ -127,7 +127,7 @@ let lib = {
 		return cb(true);
 	},
 	
-	"conf": (envString, cb) => {
+	"confOLD": (envString, cb) => {
 		let configuration = null;
 		if (envString) {
 			try {
@@ -136,6 +136,37 @@ let lib = {
 				log('Unable to parse the content of SOAJS Gateway configuration ...');
 				log(e);
 				return cb(null);
+			}
+		}
+		if (configuration && configuration.domain && configuration.port && configuration.ip) {
+			return cb(configuration);
+		}
+		else {
+			return cb(null);
+		}
+	},
+	
+	"conf": (cb) => {
+		let configuration = null;
+		if (process.env.SOAJS_GATEWAY_CONFIG) {
+			log('Fetching SOAJS Gateway configuration ...');
+			let envString = process.env.SOAJS_GATEWAY_CONFIG;
+			if (envString) {
+				try {
+					configuration = JSON.parse(envString);
+				} catch (e) {
+					log('Unable to parse the content of SOAJS Gateway configuration ...');
+					log(e);
+					return cb(null);
+				}
+			}
+		} else {
+			if (process.env.SOAJS_NX_DOMAIN && process.env.SOAJS_NX_API_DOMAIN && process.env.SOAJS_NX_CONTROLLER_IP_1 && process.env.SOAJS_NX_CONTROLLER_PORT) {
+				configuration = {};
+				configuration.domain = process.env.SOAJS_NX_API_DOMAIN;
+				configuration.port = process.env.SOAJS_NX_CONTROLLER_PORT;
+				configuration.ip = process.env.SOAJS_NX_CONTROLLER_IP_1;
+				configuration.domainPrefix = process.env.SOAJS_NX_API_DOMAIN.replace("." + process.env.SOAJS_NX_DOMAIN, "");
 			}
 		}
 		if (configuration && configuration.domain && configuration.port && configuration.ip) {
