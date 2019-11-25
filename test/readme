@@ -41,6 +41,15 @@ export SOAJS_SSL_CONFIG='{"email":"me@ddd.com"}'
 export SOAJS_SSL_CONFIG='{"email":"me@ddd.com","domains":["www.d1.com","www.d2.com"]}'
 
 
+//NGINX console
+export SOAJS_NX_DOMAIN="soajs.io"
+export SOAJS_NX_API_DOMAIN="cloud-api.soajs.io"
+export SOAJS_NX_CONTROLLER_IP_1="10.31.243.169"
+export SOAJS_NX_CONTROLLER_PORT="4000"
+export SOAJS_NX_SITE_DOMAIN="cloud.soajs.io"
+export SOAJS_SSL_CONFIG='{"email":"antoine@soajs.org","redirect":true}'
+
+
 //RUN GOLANG
 node . -T golang -S deploy
 node . -T golang -S install
@@ -74,3 +83,11 @@ OLD deployer
     "SOAJS_CONFIG_REPO_NAME=rs.cor.backoffice.config",
     "SOAJS_CONFIG_REPO_BRANCH=master",
     "SOAJS_CONFIG_REPO_COMMIT=163b27724a874afe0e61113764400324d2b45bd6",
+
+
+    "SOAJS_NX_DOMAIN=soajs.io",
+    "SOAJS_NX_API_DOMAIN=cloud-api.soajs.io",
+    "SOAJS_NX_CONTROLLER_IP_1=10.31.243.169",
+    "SOAJS_NX_CONTROLLER_PORT=4000",
+
+    "SOAJS_NX_SITE_DOMAIN=cloud.soajs.io",

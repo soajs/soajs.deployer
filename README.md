@@ -55,6 +55,14 @@ SOAJS_GATEWAY_CONFIG | A stringified JSON object. domainPrefix only needed for d
 SOAJS_SITES_CONFIG | A stringified JSON object | null | '["git":{"token":null,"provider":"bitbucket","owner":"soajs","domain":"bitbucket.org","repo":"soajs.deployer.example.config","branch":"master","commit":null},"conf":{"domains:["www.mydomain.com", "mydomain.com"],"folder":"/"}]'
 SOAJS_SSL_CONFIG | A stringified JSON object. domains is an array of extra domains to create SSL certifications for | null | '{"email":"me@ddd.com","redirect":true,domains":["www.d1.com","www.d2.com"]}'
 SOAJS_NX_LOC | Do not set this if you do not know what you are doing | /etc/nginx/ | 
+
+
+#### NGINX Console binary 
+ENV Variable | Description | Default | Example
+--- | ----- | :---: | ---
+SOAJS_GATEWAY_CONFIG | A stringified JSON object. domainPrefix only needed for dashboard env to update the console UI configuration with SOAJS_EXTKEY | null | '{"ip":"","port":"4000","domain:"api.mydomain.com","domainPrefix":"api"}'
+SOAJS_NX_SITE_DOMAIN | The domain for soajs console in case the binary image is used | null | 
+SOAJS_SSL_CONFIG | A stringified JSON object. domains is an array of extra domains to create SSL certifications for | null | '{"email":"me@ddd.com","redirect":true,domains":["www.d1.com","www.d2.com"]}'
 SOAJS_EXTKEY | The tenant external key to use | null |
 
 #### SOAJS
