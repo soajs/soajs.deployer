@@ -34,7 +34,7 @@ const lib = {
 						"domain": gitAccInfo.domain,
 						"repo": gitRepoInfo.repo,
 						"branch": gitRepoInfo.branch,
-						"commit": gitRepoInfo.commit
+						"commit": gitRepoInfo.commit || null
 					}
 				};
 				return cb(null, cloneOptions);
@@ -55,7 +55,7 @@ const lib = {
 					"git": {
 						"repo": gitRepoInfo.repo,
 						"branch": gitRepoInfo.branch,
-						"commit": gitRepoInfo.commit
+						"commit": gitRepoInfo.commit || null
 					}
 				};
 			}
@@ -66,12 +66,12 @@ const lib = {
 	},
 	"getREPO_OLDSTYLE": (REPO, BRANCH, COMMIT) => {
 		let cloneOptions = null;
-		if (process.env[REPO] && process.env[BRANCH] && process.env[COMMIT]) {
+		if (process.env[REPO] && process.env[BRANCH]) {
 			cloneOptions = {
 				"git": {
 					"repo": process.env[REPO],
 					"branch": process.env[BRANCH],
-					"commit": process.env[COMMIT]
+					"commit": process.env[COMMIT] || null
 				}
 			};
 		}
@@ -101,10 +101,10 @@ const lib = {
 		if (process.env[PROVIDER] && process.env[DOMAIN] && process.env[OWNER]) {
 			cloneOptions = {
 				"git": {
-					"token": process.env.SOAJS_GIT_TOKEN || null,
-					"provider": process.env.SOAJS_GIT_PROVIDER,
-					"domain": process.env.SOAJS_GIT_DOMAIN,
-					"owner": process.env.SOAJS_GIT_OWNER
+					"token": process.env[TOKEN] || null,
+					"provider": process.env[PROVIDER],
+					"domain": process.env[DOMAIN],
+					"owner": process.env[OWNER]
 				}
 			};
 		}
@@ -158,7 +158,7 @@ const lib = {
 				cloneOptions.git.commit = temp.git.commit;
 			}
 		}
-		//Check if repo and owner is there, this is enough to to tell that the needed data is here and good to proceed
+		//Check if repo and owner is there, this is enough to tell that the needed data is here and good to proceed
 		if (cloneOptions && cloneOptions.git && cloneOptions.git.repo && cloneOptions.git.owner) {
 			return cb(null, cloneOptions);
 		} else {

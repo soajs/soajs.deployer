@@ -49,6 +49,13 @@ export SOAJS_NX_CONTROLLER_PORT="4000"
 export SOAJS_NX_SITE_DOMAIN="cloud.soajs.io"
 export SOAJS_SSL_CONFIG='{"email":"antoine@soajs.org","redirect":true}'
 
+export SOAJS_GIT_OWNER="soajs"
+export SOAJS_GIT_BRANCH="release/v2.x"
+export SOAJS_GIT_REPO="soajs.dashboard"
+export SOAJS_GIT_PROVIDER="github"
+export SOAJS_GIT_DOMAIN="github.com"
+
+
 
 //RUN GOLANG
 node . -T golang -S deploy
@@ -71,16 +78,16 @@ OLD deployer
     "SOAJS_GIT_TOKEN=******************",
     "SOAJS_GIT_PROVIDER=github",
     "SOAJS_GIT_DOMAIN=github.com",
-    "SOAJS_GIT_OWNER=rockspoon",
-    "SOAJS_GIT_REPO=rs.cor.authentication-ms",
+    "SOAJS_GIT_OWNER=soajs",
+    "SOAJS_GIT_REPO=soajs.urac",
     "SOAJS_GIT_BRANCH=develop",
     "SOAJS_GIT_COMMIT=1eaab130606c1caf779bb478dad4088cf0a1e7de",
 
     "SOAJS_CONFIG_REPO_TOKEN=******************",
     "SOAJS_CONFIG_REPO_PROVIDER=github",
     "SOAJS_CONFIG_REPO_DOMAIN=github.com",
-    "SOAJS_CONFIG_REPO_OWNER=rockspoon",
-    "SOAJS_CONFIG_REPO_NAME=rs.cor.backoffice.config",
+    "SOAJS_CONFIG_REPO_OWNER=soajs",
+    "SOAJS_CONFIG_REPO_NAME=soajs.config",
     "SOAJS_CONFIG_REPO_BRANCH=master",
     "SOAJS_CONFIG_REPO_COMMIT=163b27724a874afe0e61113764400324d2b45bd6",
 
