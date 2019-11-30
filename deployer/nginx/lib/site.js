@@ -44,8 +44,8 @@ let lib = {
 		log('Writing ' + options.domain + '.conf in ' + options.location);
 		let wstream = fs.createWriteStream(path.normalize(options.location + '/' + oneDomain + '.conf'));
 		
-		wstream.write("server {\n");
 		if (options.ssl) {
+			wstream.write("server {\n");
 			wstream.write("  listen               443 ssl;\n");
 			wstream.write("  server_name          " + options.domain + ";\n");
 			wstream.write("  client_max_body_size 100m;\n");
