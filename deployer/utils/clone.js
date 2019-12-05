@@ -115,7 +115,8 @@ const cloner = {
 								return cb(null, repoPath);
 							}
 							else {
-								throw new Error(`ERROR: Switch HEAD to commit exited with code: ${code}, check clone logs`);
+								log(`ERROR: Switch HEAD to commit exited with code: ${code}, check clone logs`);
+								return cb(null, repoPath);
 							}
 						});
 					}
