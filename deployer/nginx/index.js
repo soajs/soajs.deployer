@@ -242,7 +242,7 @@ const exp = {
 					site.process({
 						"domain": process.env.SOAJS_NX_SITE_DOMAIN,
 						"folder": "/",
-						"repo": obj.paths.nginx.consoleRepo
+						"repo": process.env.SOAJS_GIT_REPO || obj.paths.nginx.consoleRepo
 					}, obj, () => {
 						return cb(null, obj);
 					});
