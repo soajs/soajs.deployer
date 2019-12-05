@@ -65,7 +65,21 @@ const exp = {
 					return cb(error, obj);
 				});
 			} else {
-				return cb(null, obj);
+				//OLD style
+				utils.repo.getRepo((error, oneSite) => {
+					if (oneSite) {
+						let sitesObj = [oneSite];
+						let config = {
+							"content": 'nginx',
+							"type": 'sites'
+						};
+						sites.sitesDeploy(obj, config, sitesObj, (error) => {
+							return cb(error, obj);
+						});
+					} else {
+						return cb(null, obj);
+					}
+				});
 			}
 		});
 		installFnArray.push((obj, cb) => {

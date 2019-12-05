@@ -104,7 +104,7 @@ const cloner = {
 						});
 						commit.on('error', (error) => {
 							log(`Switching HEAD to commit ${options.git.commit} Failed`);
-							throw new Error(error);
+							log(error);
 						});
 						commit.on('data', (data) => {
 							log(data.toString());
