@@ -33,6 +33,6 @@ RUN chmod 755 /opt/soajs/soajs.deployer/deployer/bin/*.sh
 WORKDIR /opt/soajs/soajs.deployer/deployer/
 
 COPY ./FILES/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY ./FILES/nginx/ssl.conf /etc/nginx/ssl.conf
+COPY ./FILES/nginx/pci-ssl.conf /etc/nginx/ssl.conf
 
 CMD ["/bin/bash"]
