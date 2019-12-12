@@ -53,9 +53,39 @@ let certbot = {
 			let firstDomain = sslDomainStr.split(",");
 			fs.stat(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/privkey.pem", (error, stats) => {
 				if (!error && stats) {
-					certbot.install(options, cb);
-				}
-				else {
+					certbot.install(options, (error, nginxReloaded) => {
+						fs.stat(options.paths.nginx.cert + "privkey.pem", (newerror, newstats) => {
+							fs.stat(options.paths.nginx.certLocal + "privkey.pem", (existerror, existstats) => {
+								
+								if (newstats && !existstats) {
+									log('Backup certificate locally ....');
+									fs.copyFileSync(options.paths.nginx.cert + "privkey.pem", options.paths.nginx.certLocal + "privkey.pem");
+									fs.copyFileSync(options.paths.nginx.cert + "fullchain.pem", options.paths.nginx.certLocal + "fullchain.pem");
+									if (!nginxReloaded) {
+										certbot.reloadNginx(() => {
+										});
+									}
+									return cb(null);
+								} else {
+									fs.readFile(options.paths.nginx.cert + "privkey.pem", (error, fileData) => {
+										if (!error && fileData) {
+											fs.readFile(options.paths.nginx.certLocal + "privkey.pem", (error, localfileData) => {
+												if (!error && localfileData) {
+													if (!fileData.equals(localfileData)) {
+														certbot.reloadNginx(() => {
+														});
+													}
+												}
+											});
+										}
+									});
+									return cb(null);
+								}
+								
+							});
+						});
+					});
+				} else {
 					log('Nothing to renew. Skipping ...');
 					return cb(null);
 				}
@@ -107,7 +137,14 @@ let certbot = {
 										log('Copying new certificate ....');
 										fs.copyFileSync(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/privkey.pem", options.paths.nginx.cert + "privkey.pem");
 										fs.copyFileSync(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/fullchain.pem", options.paths.nginx.cert + "fullchain.pem");
-										certbot.reloadNginx(cb);
+										
+										log('Backup certificate locally ....');
+										fs.copyFileSync(options.paths.nginx.cert + "privkey.pem", options.paths.nginx.certLocal + "privkey.pem");
+										fs.copyFileSync(options.paths.nginx.cert + "fullchain.pem", options.paths.nginx.certLocal + "fullchain.pem");
+										
+										certbot.reloadNginx((error) => {
+											return cb(error, true);
+										});
 									} else {
 										log('Keeping existing certificate .... nothing copy!');
 									}

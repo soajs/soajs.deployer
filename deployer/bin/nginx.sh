@@ -51,6 +51,7 @@ if [ ! -z "${SOAJS_SSL_CONFIG}" ]; then
 	fi
 
 	if [ ! -z "${SOAJS_SSL_SECRET}" ]; then
+        echo $'SOAJS_SSL_SECRET detected ....'
 		$(while inotifywait -e close_write /opt/soajs/certificates/secret/.; do secretRenew; done;) &
 	else
 		### Send certbot Emission/Renewal to background
