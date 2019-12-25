@@ -12,15 +12,25 @@ secretRenew(){
     echo $'SOAJS Secret auto renew ....'
 	pushd /opt/soajs/soajs.deployer/deployer/
 
-	if [ -f /opt/soajs/certificates/secret/fullchain_crt ]; then
-		openssl x509 -outform PEM -in /opt/soajs/certificates/secret/fullchain_crt -out /opt/soajs/certificates/fullchain.pem
+	if [ -f /opt/soajs/certificates/secret/fullchain_crt/fullchain-crt ]; then
+
+		pushd /opt/soajs/certificates/secret/
+		csplit -f "crt" /opt/soajs/certificates/secret/fullchain_crt/fullchain-crt '/-----BEGIN CERTIFICATE-----/' '{*}'
+		openssl x509 -outform PEM -in /opt/soajs/certificates/secret/crt01 -out /opt/soajs/certificates/secret/crt01.pem
+		openssl x509 -outform PEM -in /opt/soajs/certificates/secret/crt02 -out /opt/soajs/certificates/secret/crt02.pem
+		cat /opt/soajs/certificates/secret/crt01.pem > /opt/soajs/certificates/secret/fullchain.pem
+		cat /opt/soajs/certificates/secret/crt02.pem >> /opt/soajs/certificates/secret/fullchain.pem
+		cp /opt/soajs/certificates/secret/fullchain.pem /opt/soajs/certificates/fullchain.pem
+		rm -f crt*
+		popd
+
 		echo $'Full chain fullchain.pem created'
 	else
 		echo $'Unable to find fullchain_crt ...'
 	fi
 
-	if [ -f /opt/soajs/certificates/secret/private_key ]; then
-		openssl rsa -outform PEM -in /opt/soajs/certificates/secret/private_key -out /opt/soajs/certificates/privkey.pem
+	if [ -f /opt/soajs/certificates/secret/private_key/private-key ]; then
+		openssl rsa -outform PEM -in /opt/soajs/certificates/secret/private_key/private-key -out /opt/soajs/certificates/privkey.pem
 		echo $'Key privkey.pem created'
 	else
 		echo $'Unable to find private_key ...'
@@ -52,7 +62,8 @@ if [ ! -z "${SOAJS_SSL_CONFIG}" ]; then
 
 	if [ ! -z "${SOAJS_SSL_SECRET}" ]; then
         echo $'SOAJS_SSL_SECRET detected ....'
-		$(while inotifywait -e close_write /opt/soajs/certificates/secret/.; do secretRenew; done;) &
+        secretRenew
+		$(while inotifywait -e close_write /opt/soajs/certificates/secret/private_key/private-key; do secretRenew; done;) &
 	else
 		### Send certbot Emission/Renewal to background
 		$(while :; do certbotRenew; sleep 12h; done;) &
