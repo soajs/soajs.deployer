@@ -136,13 +136,20 @@ let nodejs = {
 			let repoDirPath = path.join(options.paths.nodejs.path, options.git.repo);
 			
 			let serviceRun = options.nodejs.main;
-			let nodeParams = ((options.nodejs.memory) ? '--max_old_space_size=' + options.nodejs.memory : '');
 			
+			let nodeParams = null;
+			if (options.nodejs.memory) {
+				nodeParams = '--max_old_space_size=';
+			}
 			let runParams = [];
 			if (nodeParams) {
 				runParams.push(nodeParams);
 			}
 			runParams.push(serviceRun);
+			
+			log('About to run node with:');
+			log(runParams);
+			log('at: ' + repoDirPath);
 			
 			const node = spawn('node', runParams, {
 				stdio: 'inherit',
