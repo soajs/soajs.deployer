@@ -61,7 +61,7 @@ let lib = {
 			wstream.write("  ssl_dhparam         " + options.paths.nginx.cert + "dhparam.pem;\n");
 			
 			// to be able to renew the certificate
-			if (options.ssl.redirect === "false") {
+			if (options.ssl.redirect !== "false") {
 				wstream.write("  location /.well-known/acme-challenge/ {\n");
 				wstream.write("    root " + options.paths.nginx.cert + "webroot/;\n");
 				wstream.write("  }\n");
@@ -70,7 +70,7 @@ let lib = {
 			wstream.write("}\n");
 		}
 		
-		if (options.ssl && options.ssl.redirect === "false" ) {
+		if (options.ssl && options.ssl.redirect !== "false" ) {
 			wstream.write("server {\n");
 			wstream.write("  listen               80;\n");
 			wstream.write("  server_name          " + options.domain + ";\n");
