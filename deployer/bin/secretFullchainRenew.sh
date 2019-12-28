@@ -4,17 +4,27 @@ MD5
 
 executeWork(){
 	if [ -f /opt/soajs/certificates/secret/fullchain_crt/fullchain-crt ]; then
-
 		pushd /opt/soajs/certificates/secret/
 		csplit -f "crt" /opt/soajs/certificates/secret/fullchain_crt/fullchain-crt '/-----BEGIN CERTIFICATE-----/' '{*}'
-		openssl x509 -outform PEM -in /opt/soajs/certificates/secret/crt01 -out /opt/soajs/certificates/secret/crt01.pem
-		openssl x509 -outform PEM -in /opt/soajs/certificates/secret/crt02 -out /opt/soajs/certificates/secret/crt02.pem
-		cat /opt/soajs/certificates/secret/crt01.pem > /opt/soajs/certificates/secret/fullchain.pem
-		cat /opt/soajs/certificates/secret/crt02.pem >> /opt/soajs/certificates/secret/fullchain.pem
-		mv /opt/soajs/certificates/secret/fullchain.pem /opt/soajs/certificates/fullchain.pem
-		rm -f crt*
-		popd
 
+		if [ -f /opt/soajs/certificates/secret/crt01 ]; then
+			openssl x509 -outform PEM -in /opt/soajs/certificates/secret/crt01 -out /opt/soajs/certificates/secret/crt01.pem
+		fi
+		if [ -f /opt/soajs/certificates/secret/crt02 ]; then
+			openssl x509 -outform PEM -in /opt/soajs/certificates/secret/crt02 -out /opt/soajs/certificates/secret/crt02.pem
+		fi
+		if [ -f /opt/soajs/certificates/secret/crt01.pem ]; then
+			if [ -f /opt/soajs/certificates/secret/crt02.pem ]; then
+				cat /opt/soajs/certificates/secret/crt01.pem > /opt/soajs/certificates/secret/fullchain.pem
+				cat /opt/soajs/certificates/secret/crt02.pem >> /opt/soajs/certificates/secret/fullchain.pem
+				mv /opt/soajs/certificates/secret/fullchain.pem /opt/soajs/certificates/fullchain.pem
+			fi
+		else
+			echo $'Unable to create fullchain.pem ...'
+		fi
+		rm -f crt*
+
+		popd
 		echo $'Full chain fullchain.pem created'
 	else
 		echo $'Unable to find fullchain_crt ...'
