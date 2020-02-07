@@ -37,11 +37,14 @@ jobs:
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
     - docker build -t soajsorg/go -f Dockerfile_go .
+    - docker build -t soajsorg/go-1.12.5 -f Dockerfile_go_1.12.5 .
     - docker build -t soajsorg/node -f Dockerfile_node .
     - docker build -t soajsorg/fe -f Dockerfile_nginx .
 
     - docker tag soajsorg/go:latest soajsorg/go:${PACKAGE_VERSION}
     - docker tag soajsorg/go:latest soajsorg/go:${MAJOR_VERSION}.x
+    - docker tag soajsorg/go:latest soajsorg/go-1.12.5:${PACKAGE_VERSION}
+    - docker tag soajsorg/go:latest soajsorg/go-1.12.5:${MAJOR_VERSION}.x
 
     - docker tag soajsorg/node:latest soajsorg/node:${PACKAGE_VERSION}
     - docker tag soajsorg/node:latest soajsorg/node:${MAJOR_VERSION}.x
