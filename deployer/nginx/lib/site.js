@@ -121,7 +121,7 @@ let lib = {
 						"ssl": options.sslConfiguration,
 						"paths": options.paths
 					});
-					options.sslDomain = options.sslDomain.concat(configuration[i].domain);
+					options.sslDomain = options.sslDomain.concat(configuration[i].domains);
 				}
 			}
 			return cb();

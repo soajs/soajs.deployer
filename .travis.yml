@@ -56,5 +56,6 @@ jobs:
     - docker images
 
     - docker push soajsorg/go
+    - docker push soajsorg/go-1.12.5
     - docker push soajsorg/node
     - docker push soajsorg/fe
