@@ -246,6 +246,22 @@ const exp = {
 					}, obj, () => {
 						return cb(null, obj);
 					});
+				} else if (process.env.SOAJS_NX_SITE_DOMAINS) {
+					let domains = null;
+					try {
+						domains = JSON.parse(process.env.SOAJS_NX_SITE_DOMAINS);
+					} catch (e) {
+						log('Unable to parse the content of SOAJS_NX_SITE_DOMAINS ...');
+						log(e);
+						return cb(null, obj);
+					}
+					site.process([{
+						"domains": domains,
+						"folder": "/",
+						"repo": process.env.SOAJS_GIT_REPO || obj.paths.nginx.consoleRepo
+					}], obj, () => {
+						return cb(null, obj);
+					});
 				} else {
 					return cb(null, obj);
 				}

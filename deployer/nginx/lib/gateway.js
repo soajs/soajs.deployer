@@ -161,12 +161,18 @@ let lib = {
 				}
 			}
 		} else {
-			if (process.env.SOAJS_NX_DOMAIN && process.env.SOAJS_NX_API_DOMAIN && process.env.SOAJS_NX_CONTROLLER_IP_1 && process.env.SOAJS_NX_CONTROLLER_PORT) {
+			if (process.env.SOAJS_NX_API_DOMAIN && (process.env.SOAJS_NX_CONTROLLER_IP || process.env.SOAJS_NX_CONTROLLER_IP_1) && process.env.SOAJS_NX_CONTROLLER_PORT) {
 				configuration = {};
 				configuration.domain = process.env.SOAJS_NX_API_DOMAIN;
 				configuration.port = process.env.SOAJS_NX_CONTROLLER_PORT;
-				configuration.ip = process.env.SOAJS_NX_CONTROLLER_IP_1;
-				configuration.domainPrefix = process.env.SOAJS_NX_API_DOMAIN.replace("." + process.env.SOAJS_NX_DOMAIN, "");
+				if (process.env.SOAJS_NX_CONTROLLER_IP) {
+					configuration.ip = process.env.SOAJS_NX_CONTROLLER_IP;
+				} else if (process.env.SOAJS_NX_CONTROLLER_IP_1) {
+					configuration.ip = process.env.SOAJS_NX_CONTROLLER_IP_1;
+				}
+				if (process.env.SOAJS_NX_DOMAIN) {
+					configuration.domainPrefix = process.env.SOAJS_NX_API_DOMAIN.replace("." + process.env.SOAJS_NX_DOMAIN, "");
+				}
 			}
 		}
 		if (configuration && configuration.domain && configuration.port && configuration.ip) {
