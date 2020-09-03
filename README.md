@@ -56,6 +56,7 @@ SOAJS_SITES_CONFIG | A stringified JSON object | null | '["git":{"token":null,"p
 SOAJS_SSL_CONFIG | A stringified JSON object. domains is an array of extra domains to create SSL certifications for | null | '{"email":"me@ddd.com","redirect":true,domains":["www.d1.com","www.d2.com"]}'
 SOAJS_NX_LOC | Do not set this if you do not know what you are doing | /etc/nginx/ | 
 SOAJS_SSL_SECRET | set this to true if you want to use secret to handle ssl, you must get a certificate and add these files fullchain-crt and private-key | not set | location /opt/soajs/certificates/secret/ |
+SOAJS_NX_API_DOMAIN_PREFIX | to deploy console ui as standalone | not set |
 
 #### NGINX Console binary 
 ENV Variable | Description | Default | Example
