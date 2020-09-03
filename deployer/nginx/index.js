@@ -183,7 +183,7 @@ const exp = {
 				
 				let domainPrefix = process.env.SOAJS_NX_API_DOMAIN_PREFIX;
 				if (obj.gatewayConf && obj.gatewayConf.domainPrefix) {
-					domainPrefix = obj.gatewayConf.domainPrefix
+					domainPrefix = obj.gatewayConf.domainPrefix;
 				}
 				console.updateConfig({
 					"location": obj.paths.nginx.site + obj.paths.nginx.consoleRepo + "/",
