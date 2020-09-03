@@ -174,15 +174,20 @@ const exp = {
 			}
 		});
 		installFnArray.push((obj, cb) => {
-			if (obj.gatewayConf) {
+			if (obj.gatewayConf || process.env.SOAJS_NX_API_DOMAIN_PREFIX) {
 				if (!process.env.SOAJS_ENV || ['dashboard'].indexOf(process.env.SOAJS_ENV.toLowerCase()) === -1) {
 					return cb(null, obj);
 				}
 				
 				log('Update SOAJS console UI with the right ext KEY ...');
+				
+				let domainPrefix = process.env.SOAJS_NX_API_DOMAIN_PREFIX;
+				if (obj.gatewayConf && obj.gatewayConf.domainPrefix) {
+					domainPrefix = obj.gatewayConf.domainPrefix
+				}
 				console.updateConfig({
 					"location": obj.paths.nginx.site + obj.paths.nginx.consoleRepo + "/",
-					"domainPrefix": obj.gatewayConf.domainPrefix,
+					"domainPrefix": domainPrefix,
 					"extKey": process.env.SOAJS_EXTKEY
 				}, (error, done) => {
 					if (done) {
