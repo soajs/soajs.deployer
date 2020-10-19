@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MD5
+MD5=""
 
 executeWork () {
 	if [ -f /opt/soajs/certificates/secret/private_key/private-key ]; then
