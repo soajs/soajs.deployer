@@ -185,8 +185,9 @@ const exp = {
 				if (obj.gatewayConf && obj.gatewayConf.domainPrefix) {
 					domainPrefix = obj.gatewayConf.domainPrefix;
 				}
+				let custom_folder = process.env.SOAJS_NX_SITE_FOLDER || "/";
 				console.updateConfig({
-					"location": obj.paths.nginx.site + obj.paths.nginx.consoleRepo + "/",
+					"location": path.join(obj.paths.nginx.site + obj.paths.nginx.consoleRepo, custom_folder + "/"),
 					"domainPrefix": domainPrefix,
 					"extKey": process.env.SOAJS_EXTKEY
 				}, (error, done) => {
@@ -246,7 +247,7 @@ const exp = {
 				if (process.env.SOAJS_NX_SITE_DOMAIN) {
 					site.process({
 						"domain": process.env.SOAJS_NX_SITE_DOMAIN,
-						"folder": "/",
+						"folder": process.env.SOAJS_NX_SITE_FOLDER || "/",
 						"repo": process.env.SOAJS_GIT_REPO || obj.paths.nginx.consoleRepo
 					}, obj, () => {
 						return cb(null, obj);
@@ -262,7 +263,7 @@ const exp = {
 					}
 					site.process([{
 						"domains": domains,
-						"folder": "/",
+						"folder": process.env.SOAJS_NX_SITE_FOLDER || "/",
 						"repo": process.env.SOAJS_GIT_REPO || obj.paths.nginx.consoleRepo
 					}], obj, () => {
 						return cb(null, obj);

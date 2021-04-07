@@ -65,6 +65,7 @@ SOAJS_GATEWAY_CONFIG | A stringified JSON object. domainPrefix only needed for d
 SOAJS_NX_SITE_DOMAIN | The domain for soajs console in case the binary image is used | null | 
 SOAJS_SSL_CONFIG | A stringified JSON object. domains is an array of extra domains to create SSL certifications for | null | '{"email":"me@ddd.com","redirect":true,domains":["www.d1.com","www.d2.com"]}'
 SOAJS_EXTKEY | The tenant external key to use | null |
+SOAJS_NX_SITE_FOLDER | used to point to a build folder | null | '/build/'
 
 #### SOAJS
 ENV Variable | Description | Default | Example

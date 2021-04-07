@@ -40,6 +40,9 @@ export SOAJS_SSL_CONFIG='{"email":"me@ddd.com"}'
 // WITH EXTRA DOMAINS
 export SOAJS_SSL_CONFIG='{"email":"me@ddd.com","domains":["www.d1.com","www.d2.com"]}'
 
+export SOAJS_NX_SITE_FOLDER="/build/"
+
+
 
 //NGINX console
 export SOAJS_NX_DOMAIN="soajs.io"

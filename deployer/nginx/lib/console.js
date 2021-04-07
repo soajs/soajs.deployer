@@ -28,7 +28,7 @@ let lib = {
 			api: options.domainPrefix,
 			key: options.extKey
 		};
-		customSettings = "var customSettings = " + JSON.stringify(customSettings, null, 2) + ";";
+		customSettings = "let customSettings = " + JSON.stringify(customSettings, null, 2) + ";";
 		
 		fs.writeFile(options.location + "settings.js", customSettings, {'encoding': 'utf8'}, (error) => {
 			if (error) {
