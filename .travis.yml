@@ -35,7 +35,8 @@ jobs:
     - export MAJOR_VERSION=$(echo ${PACKAGE_VERSION} | awk -F. '{ print $1 }')
     - echo Package version ${PACKAGE_VERSION}
     - echo Major version ${MAJOR_VERSION}
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
     - docker build -t soajsorg/go -f Dockerfile_go .
     - docker build -t soajsorg/go-1.12.5 -f Dockerfile_go_1.12.5 .
