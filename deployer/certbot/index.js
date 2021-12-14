@@ -10,7 +10,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const log = require('util').log;
+const log = console.log;
 const spawn = require('child_process').spawn;
 
 function datesEqual(a, b) {

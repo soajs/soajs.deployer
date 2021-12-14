@@ -12,7 +12,7 @@
 const async = require("async");
 const utils = require('../../utils');
 const site = require('./site.js');
-const log = require('util').log;
+const log = console.log;
 const path = require('path');
 
 let lib = {

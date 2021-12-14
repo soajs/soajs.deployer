@@ -8,7 +8,7 @@
  * found in the LICENSE file at the root of this repository
  */
 
-const log = require('util').log;
+const log = console.log;
 
 const lib = {
 	"get": (ACC_ENV_NAME, REPO_ENV_NAME, cb) => {

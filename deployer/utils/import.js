@@ -11,7 +11,7 @@
 const fs = require('fs');
 const path = require('path');
 const async = require('async');
-const log = require('util').log;
+const log = console.log;
 const handlebars = require("handlebars");
 
 handlebars.registerHelper('for', function (from, to, incr, block) {

@@ -8,7 +8,7 @@
  * found in the LICENSE file at the root of this repository
  */
 
-const log = require('util').log;
+const log = console.log;
 const path = require('path');
 const spawn = require('child_process').spawn;
 

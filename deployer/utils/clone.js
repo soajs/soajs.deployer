@@ -9,7 +9,7 @@
  */
 
 const spawn = require('child_process').spawn;
-const log = require('util').log;
+const log = console.log;
 const rimraf = require('rimraf');
 const path = require("path");
 const fs = require('fs');

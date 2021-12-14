@@ -9,9 +9,9 @@
  */
 
 module.exports = {
-
-    clone: require('./clone.js').clone,
-    import: require('./import.js').import,
+	
+	clone: require('./clone.js').clone,
+	import: require('./import.js').import,
 	repo: require('./repo.js')
-
+	
 };

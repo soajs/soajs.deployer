@@ -9,7 +9,7 @@
  */
 
 
-const log = require('util').log;
+const log = console.log;
 const fs = require('fs');
 
 let lib = {

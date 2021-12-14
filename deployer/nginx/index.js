@@ -8,12 +8,12 @@
  * found in the LICENSE file at the root of this repository
  */
 
-const log = require('util').log;
+const log = console.log;
 const spawn = require('child_process').spawn;
 const utils = require('../utils');
 const async = require("async");
 const gateway = require('./lib/gateway.js');
-const console = require('./lib/console.js');
+const _console = require('./lib/console.js');
 const sites = require('./lib/sites.js');
 const site = require('./lib/site.js');
 const fs = require('fs');
@@ -186,7 +186,7 @@ const exp = {
 					domainPrefix = obj.gatewayConf.domainPrefix;
 				}
 				let custom_folder = process.env.SOAJS_NX_SITE_FOLDER || "/";
-				console.updateConfig({
+				_console.updateConfig({
 					"location": path.join(obj.paths.nginx.site + obj.paths.nginx.consoleRepo, custom_folder + "/"),
 					"domainPrefix": domainPrefix,
 					"extKey": process.env.SOAJS_EXTKEY

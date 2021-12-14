@@ -8,7 +8,7 @@
  */
 
 const script = require('commander');
-const log = require('util').log;
+const log = console.log;
 
 const config = require('./config.js');
 const utils = require('./utils');
