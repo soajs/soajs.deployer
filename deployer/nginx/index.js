@@ -294,7 +294,7 @@ const exp = {
 				}
 				if (sslDomainStr) {
 					let filePath = path.join(obj.paths.nginx.cert, "domains");
-					fs.writeFile(filePath, obj.sslDomain, (error) => {
+					fs.writeFile(filePath, JSON.stringify(obj.sslDomain), (error) => {
 						if (error) {
 							log(`An error occurred while writing ${filePath}, for ssl domain ...`);
 							return cb(error, obj);
