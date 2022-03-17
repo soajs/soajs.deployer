@@ -50,7 +50,14 @@ let certbot = {
 				log('Unable to find any domain. Skipping ...');
 				return cb(null);
 			}
-			let firstDomain = sslDomainStr.split(",");
+			let sslDomainJson = [];
+			try {
+				sslDomainJson = JSON.parse(sslDomainStr);
+			} catch (e){
+				
+				log("An error occurred while parsing domains", e.message);
+			}
+			let firstDomain = sslDomainJson;
 			fs.stat(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/privkey.pem", (error, stats) => {
 				if (!error && stats) {
 					certbot.install(options, (error, nginxReloaded) => {
@@ -112,12 +119,21 @@ let certbot = {
 					log('Unable to find any domain. Skipping ...');
 					return cb(null);
 				}
-				
-				let firstDomain = sslDomainStr.split(",");
+				let sslDomainJson = [];
+				try {
+					sslDomainJson = JSON.parse(sslDomainStr);
+				} catch (e){
+					
+					log("An error occurred while parsing domains", e.message);
+				}
+				let firstDomain = sslDomainJson;
 				fs.stat(options.paths.nginx.letsencrypt + "live/" + firstDomain[0] + "/privkey.pem", (error, stats) => {
 					log(`The list of domains to create certifications for is: ${sslDomainStr}`);
-					let commands = ['certonly', '--webroot', '-w', options.paths.nginx.cert + 'webroot/', '--config-dir', options.paths.nginx.letsencrypt, '-n', '--agree-tos', '-m', configuration.email, '--expand', '-d', sslDomainStr];
-					
+					let commands = ['certonly', '--webroot', '-w', options.paths.nginx.cert + 'webroot/', '--config-dir', options.paths.nginx.letsencrypt, '-n', '--agree-tos', '-m', configuration.email, '--expand'];
+					for (let i=0; i<sslDomainJson.length; i++){
+						commands.push ('-d');
+						commands.push(sslDomainJson[i]);
+					}
 					if (options.dryrun) {
 						commands.push('--dry-run');
 					}
