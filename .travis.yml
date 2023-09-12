@@ -39,32 +39,44 @@ jobs:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
     - docker build -t soajsorg/go -f Dockerfile_go .
-    - docker build -t soajsorg/go-1.12.5 -f Dockerfile_go_1.12.5 .
+    # - docker build -t soajsorg/go-1.12.5 -f Dockerfile_go_1.12.5 .
     - docker build -t soajsorg/node -f Dockerfile_node .
-    - docker build -t soajsorg/fe -f Dockerfile_nginx .
+    # - docker build -t soajsorg/fe -f Dockerfile_nginx .
+    - docker build -t soajsorg/fe-nossl -f Dockerfile_nginx-nossl .
 
     - docker tag soajsorg/go:latest soajsorg/go:${PACKAGE_VERSION}
     - docker tag soajsorg/go:latest soajsorg/go:${MAJOR_VERSION}.x
-    - docker tag soajsorg/go:latest soajsorg/go-1.12.5:${PACKAGE_VERSION}
-    - docker tag soajsorg/go:latest soajsorg/go-1.12.5:${MAJOR_VERSION}.x
+
+    # - docker tag soajsorg/go-1.12.5:latest soajsorg/go-1.12.5:${PACKAGE_VERSION}
+    # - docker tag soajsorg/go-1.12.5:latest soajsorg/go-1.12.5:${MAJOR_VERSION}.x
 
     - docker tag soajsorg/node:latest soajsorg/node:${PACKAGE_VERSION}
     - docker tag soajsorg/node:latest soajsorg/node:${MAJOR_VERSION}.x
 
-    - docker tag soajsorg/fe:latest soajsorg/fe:${PACKAGE_VERSION}
-    - docker tag soajsorg/fe:latest soajsorg/fe:${MAJOR_VERSION}.x
+    # - docker tag soajsorg/fe:latest soajsorg/fe:${PACKAGE_VERSION}
+    # - docker tag soajsorg/fe:latest soajsorg/fe:${MAJOR_VERSION}.x
+
+    - docker tag soajsorg/fe-nossl:latest soajsorg/fe-nossl:${PACKAGE_VERSION}
+    - docker tag soajsorg/fe-nossl:latest soajsorg/fe-nossl:${MAJOR_VERSION}.x
 
     - docker images
 
     - docker push soajsorg/go
     - docker push soajsorg/go:${PACKAGE_VERSION}
     - docker push soajsorg/go:${MAJOR_VERSION}.x
-    - docker push soajsorg/go-1.12.5
-    - docker push soajsorg/go-1.12.5:${PACKAGE_VERSION}
-    - docker push soajsorg/go-1.12.5:${MAJOR_VERSION}.x
+
+    # - docker push soajsorg/go-1.12.5
+    # - docker push soajsorg/go-1.12.5:${PACKAGE_VERSION}
+    # - docker push soajsorg/go-1.12.5:${MAJOR_VERSION}.x
+
     - docker push soajsorg/node
     - docker push soajsorg/node:${PACKAGE_VERSION}
     - docker push soajsorg/node:${MAJOR_VERSION}.x
-    - docker push soajsorg/fe
-    - docker push soajsorg/fe:${PACKAGE_VERSION}
-    - docker push soajsorg/fe:${MAJOR_VERSION}.x
+
+    # - docker push soajsorg/fe
+    # - docker push soajsorg/fe:${PACKAGE_VERSION}
+    # - docker push soajsorg/fe:${MAJOR_VERSION}.x
+
+    - docker push soajsorg/fe-nossl
+    - docker push soajsorg/fe-nossl:${PACKAGE_VERSION}
+    - docker push soajsorg/fe-nossl:${MAJOR_VERSION}.x
