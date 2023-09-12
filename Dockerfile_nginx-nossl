@@ -4,17 +4,24 @@ RUN apt-get update && \
     apt-get install --fix-missing -y git curl && \
     curl -sL https://deb.nodesource.com/setup_18.x | bash && \
     apt-get install --fix-missing -y nodejs
-    
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get install --fix-missing -y postfix python make g++
 
-ENV SOAJS_DEPLOYER_TYPE=nodejs
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get install -y nginx
+
+ENV SOAJS_DEPLOYER_TYPE=nginx
 ENV NODE_ENV=production
 RUN mkdir -p /opt/soajs/soajs.deployer/node_modules
 RUN mkdir -p /opt/soajs/tmp
+RUN mkdir -p /opt/soajs/certificates/webroot/
+
 WORKDIR /opt/soajs/soajs.deployer/
 COPY . .
 RUN npm install
+
+RUN chmod 755 /opt/soajs/soajs.deployer/deployer/bin/*.sh
+
 WORKDIR /opt/soajs/soajs.deployer/deployer/
+
+COPY ./FILES/nginx/nginx.conf /etc/nginx/nginx.conf
 
 CMD ["/bin/bash"]
