@@ -73,7 +73,7 @@ let lib = {
 			wstream.write("  location / {\n");
 			wstream.write("    proxy_pass 		    http://" + options.label + ";\n");
 			wstream.write("    proxy_set_header   	X-Forwarded-Proto 	    $scheme;\n");
-			wstream.write("    proxy_set_header   	X-Forwarded-For 	    $remote_addr;\n");
+			// wstream.write("    proxy_set_header   	X-Forwarded-For 	    $remote_addr;\n");
 			wstream.write("    proxy_set_header   	Host             		$http_host;\n");
 			wstream.write("    proxy_set_header   	X-NginX-Proxy     	    true;\n");
 			wstream.write("    proxy_set_header   	Connection        	    \"\";\n");
@@ -108,7 +108,7 @@ let lib = {
 			wstream.write("  location / {\n");
 			wstream.write("    proxy_pass 		    http://" + options.label + ";\n");
 			wstream.write("    proxy_set_header   	X-Forwarded-Proto 	    $scheme;\n");
-			wstream.write("    proxy_set_header   	X-Forwarded-For 	    $remote_addr;\n");
+			// wstream.write("    proxy_set_header   	X-Forwarded-For 	    $remote_addr;\n");
 			wstream.write("    proxy_set_header   	Host             		$http_host;\n");
 			wstream.write("    proxy_set_header   	X-NginX-Proxy     	    true;\n");
 			wstream.write("    proxy_set_header   	Connection        	    \"\";\n");
