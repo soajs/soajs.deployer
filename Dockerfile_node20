@@ -1,0 +1,20 @@
+FROM ubuntu:20.04
+
+RUN apt-get update && \
+    apt-get install --fix-missing -y git curl && \
+    curl -sL https://deb.nodesource.com/setup_20.x | bash && \
+    apt-get install --fix-missing -y nodejs
+    
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get install --fix-missing -y postfix python make g++
+
+ENV SOAJS_DEPLOYER_TYPE=nodejs
+ENV NODE_ENV=production
+RUN mkdir -p /opt/soajs/soajs.deployer/node_modules
+RUN mkdir -p /opt/soajs/tmp
+WORKDIR /opt/soajs/soajs.deployer/
+COPY . .
+RUN npm install
+WORKDIR /opt/soajs/soajs.deployer/deployer/
+
+CMD ["/bin/bash"]

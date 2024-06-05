@@ -41,6 +41,7 @@ jobs:
     - docker build -t soajsorg/go -f Dockerfile_go .
     # - docker build -t soajsorg/go-1.12.5 -f Dockerfile_go_1.12.5 .
     - docker build -t soajsorg/node -f Dockerfile_node .
+    - docker build -t soajsorg/node20 -f Dockerfile_node20 .
     # - docker build -t soajsorg/fe -f Dockerfile_nginx .
     - docker build -t soajsorg/fe-nossl -f Dockerfile_nginx-nossl .
 
@@ -52,6 +53,9 @@ jobs:
 
     - docker tag soajsorg/node:latest soajsorg/node:${PACKAGE_VERSION}
     - docker tag soajsorg/node:latest soajsorg/node:${MAJOR_VERSION}.x
+
+    - docker tag soajsorg/node20:latest soajsorg/node20:${PACKAGE_VERSION}
+    - docker tag soajsorg/node20:latest soajsorg/node20:${MAJOR_VERSION}.x
 
     # - docker tag soajsorg/fe:latest soajsorg/fe:${PACKAGE_VERSION}
     # - docker tag soajsorg/fe:latest soajsorg/fe:${MAJOR_VERSION}.x
