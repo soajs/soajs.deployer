@@ -77,6 +77,10 @@ jobs:
     - docker push soajsorg/node:${PACKAGE_VERSION}
     - docker push soajsorg/node:${MAJOR_VERSION}.x
 
+    - docker push soajsorg/node20
+    - docker push soajsorg/node20:${PACKAGE_VERSION}
+    - docker push soajsorg/node20:${MAJOR_VERSION}.x
+
     # - docker push soajsorg/fe
     # - docker push soajsorg/fe:${PACKAGE_VERSION}
     # - docker push soajsorg/fe:${MAJOR_VERSION}.x
