@@ -13,7 +13,9 @@ ENV NODE_ENV=production
 RUN mkdir -p /opt/soajs/soajs.deployer/node_modules
 RUN mkdir -p /opt/soajs/tmp
 WORKDIR /opt/soajs/soajs.deployer/
-COPY . .
+COPY ./deployer .
+COPY ./FILES .
+COPY ./package.json .
 RUN npm install
 WORKDIR /opt/soajs/soajs.deployer/deployer/
 
