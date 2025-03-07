@@ -24,7 +24,9 @@ RUN mkdir -p /opt/soajs/certificates/webroot/
 RUN mkdir -p /opt/soajs/certificates/letsencrypt/
 
 WORKDIR /opt/soajs/soajs.deployer/
-COPY . .
+COPY ./deployer ./deployer
+COPY ./FILES ./FILES
+COPY ./package.json ./
 RUN npm install
 
 RUN chmod 755 /opt/soajs/soajs.deployer/deployer/bin/*.sh

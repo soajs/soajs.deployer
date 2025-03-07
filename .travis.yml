@@ -15,17 +15,17 @@ jobs:
     script:
     - grunt
 
-  - stage: Publish to npm
-    if: branch = master
-    script:
-    - echo "PUBLISH npm"
-    deploy:
-      skip_cleanup: true
-      provider: npm
-      email: $NPM_EMAIL
-      api_key: $NPM_TOKEN
-      on:
-        branch: master
+  # - stage: Publish to npm
+  #   if: branch = master
+  #   script:
+  #   - echo "PUBLISH npm"
+  #   deploy:
+  #     skip_cleanup: true
+  #     provider: npm
+  #     email: $NPM_EMAIL
+  #     api_key: $NPM_TOKEN
+  #     on:
+  #       branch: master
 
   - stage: Publish to docker registry
     if: branch = master
@@ -40,10 +40,10 @@ jobs:
 
     # - docker build -t soajsorg/go -f Dockerfile_go .
     # - docker build -t soajsorg/go-1.12.5 -f Dockerfile_go_1.12.5 .
-    - docker build -t soajsorg/node -f Dockerfile_node .
-    # - docker build -t soajsorg/node20 -f Dockerfile_node20 .
+    - docker build -t soajsorg/node -f Dockerfile_node . --platform linux/amd64 
+    - docker build -t soajsorg/node-slim -f Dockerfile_node-slim . --platform linux/amd64 
     # - docker build -t soajsorg/fe -f Dockerfile_nginx .
-    # - docker build -t soajsorg/fe-nossl -f Dockerfile_nginx-nossl .
+    - docker build -t soajsorg/fe-nossl -f Dockerfile_nginx-nossl . --platform linux/amd64 
 
     # - docker tag soajsorg/go:latest soajsorg/go:${PACKAGE_VERSION}
     # - docker tag soajsorg/go:latest soajsorg/go:${MAJOR_VERSION}.x
@@ -54,14 +54,14 @@ jobs:
     - docker tag soajsorg/node:latest soajsorg/node:${PACKAGE_VERSION}
     - docker tag soajsorg/node:latest soajsorg/node:${MAJOR_VERSION}.x
 
-    # - docker tag soajsorg/node20:latest soajsorg/node20:${PACKAGE_VERSION}
-    # - docker tag soajsorg/node20:latest soajsorg/node20:${MAJOR_VERSION}.x
+    - docker tag soajsorg/node-slim:latest soajsorg/node-slim:${PACKAGE_VERSION}
+    - docker tag soajsorg/node-slim:latest soajsorg/node:${MAJOR_VERSION}.x
 
     # - docker tag soajsorg/fe:latest soajsorg/fe:${PACKAGE_VERSION}
     # - docker tag soajsorg/fe:latest soajsorg/fe:${MAJOR_VERSION}.x
 
-    # - docker tag soajsorg/fe-nossl:latest soajsorg/fe-nossl:${PACKAGE_VERSION}
-    # - docker tag soajsorg/fe-nossl:latest soajsorg/fe-nossl:${MAJOR_VERSION}.x
+    - docker tag soajsorg/fe-nossl:latest soajsorg/fe-nossl:${PACKAGE_VERSION}
+    - docker tag soajsorg/fe-nossl:latest soajsorg/fe-nossl:${MAJOR_VERSION}.x
 
     - docker images
 
@@ -77,14 +77,14 @@ jobs:
     - docker push soajsorg/node:${PACKAGE_VERSION}
     - docker push soajsorg/node:${MAJOR_VERSION}.x
 
-    # - docker push soajsorg/node20
-    # - docker push soajsorg/node20:${PACKAGE_VERSION}
-    # - docker push soajsorg/node20:${MAJOR_VERSION}.x
+    - docker push soajsorg/node-slim
+    - docker push soajsorg/node-slim:${PACKAGE_VERSION}
+    - docker push soajsorg/node-slim:${MAJOR_VERSION}.x
 
     # - docker push soajsorg/fe
     # - docker push soajsorg/fe:${PACKAGE_VERSION}
     # - docker push soajsorg/fe:${MAJOR_VERSION}.x
 
-    # - docker push soajsorg/fe-nossl
-    # - docker push soajsorg/fe-nossl:${PACKAGE_VERSION}
-    # - docker push soajsorg/fe-nossl:${MAJOR_VERSION}.x
+    - docker push soajsorg/fe-nossl
+    - docker push soajsorg/fe-nossl:${PACKAGE_VERSION}
+    - docker push soajsorg/fe-nossl:${MAJOR_VERSION}.x

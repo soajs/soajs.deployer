@@ -1,12 +1,9 @@
-FROM amd64/ubuntu:20.04
+FROM node:22.14.0-slim 
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get install --fix-missing -y git curl && \
-    curl -sL https://deb.nodesource.com/setup_20.x | bash && \
-    apt-get install --fix-missing -y nodejs
-    
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get install --fix-missing -y postfix python make g++
+    apt-get install --fix-missing -y git curl
 
 ENV SOAJS_DEPLOYER_TYPE=nodejs
 ENV NODE_ENV=production
