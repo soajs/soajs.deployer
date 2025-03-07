@@ -10,12 +10,12 @@
 
 const spawn = require('child_process').spawn;
 const log = console.log;
-const rimraf = require('rimraf');
+const { rimraf } = require('rimraf');
 const path = require("path");
 const fs = require('fs');
 
 const cloner = {
-	
+
 	/**
 	 * Function that clones a git repositroy
 	 * @param  {Object}   options An object that contains params passed to the function
@@ -45,7 +45,7 @@ const cloner = {
 			log('Only github & bitbucket are supported for now, skipping ...');
 			return cb();
 		}
-		
+
 		if (!options.git.owner || !options.git.repo || !options.git.domain || !options.git.branch) {
 			log('Repository information are missing, skipping ...');
 			return cb();
@@ -53,11 +53,11 @@ const cloner = {
 		if (!options.clonePath) {
 			throw new Error(`ERROR: No clone path specified, you need to specify where to download the contents of the repository!`);
 		}
-		
+
 		let cloneUrl = '';
 		if (options.git.token) {
 			log('Cloning from ' + options.git.provider + ' private repository ...');
-			
+
 			if (options.git.provider === 'github') {
 				cloneUrl = `https://${options.git.token}@${options.git.domain}/${options.git.owner}/${options.git.repo}.git`;
 			}
@@ -73,18 +73,18 @@ const cloner = {
 			log('Cloning from ' + options.git.provider + ' public repository ...');
 			cloneUrl = `https://${options.git.domain}/${options.git.owner}/${options.git.repo}.git`;
 		}
-		
+
 		let fnContinue = (repoPath) => {
 			log(`Cloning ${options.git.owner}/${options.git.repo} from ${options.git.branch} branch, in progress ...`);
-			
+
 			let gitCommands = ['clone', '--progress', '--branch', options.git.branch];
 			if (options.accelerateClone) {
 				gitCommands = gitCommands.concat(['--depth', '1']);
 			}
 			gitCommands = gitCommands.concat([cloneUrl, repoPath]);
-			
-			const clone = spawn('git', gitCommands, {stdio: 'inherit'});
-			
+
+			const clone = spawn('git', gitCommands, { stdio: 'inherit' });
+
 			clone.on('error', (error) => {
 				log(`Clone process failed with error: ${error}`);
 				throw new Error(error);
@@ -95,7 +95,7 @@ const cloner = {
 			clone.on('close', (code) => {
 				if (code === 0) {
 					log(`Cloning repository ${options.git.owner}/${options.git.repo} was successful, exit code: ${code}`);
-					
+
 					if (!options.accelerateClone && options.git.commit && options.git.commit !== '') {
 						log(`Detected custom commit provided, switching head to commit ${options.git.commit}`);
 						let commit = spawn("git", ['reset', '--hard', options.git.commit], {
@@ -129,15 +129,17 @@ const cloner = {
 				}
 			});
 		};
-		
+
 		let repoPath = path.normalize(options.clonePath + options.git.repo);
 		if (fs.existsSync(repoPath)) {
-			rimraf(repoPath, (error) => {
-				if (error) {
+			rimraf(repoPath)
+				.then(() => {
+					fnContinue(repoPath);
+				})
+				.catch((error) => {
 					throw new Error(error);
-				}
-				fnContinue(repoPath);
-			});
+
+				});
 		} else {
 			fnContinue(repoPath);
 		}
