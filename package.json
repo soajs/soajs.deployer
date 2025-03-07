@@ -1,7 +1,7 @@
 {
   "name": "soajs.deployer",
   "description": "SOAJS Deployer",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "author": {
     "name": "SOAJS Team",
     "email": "team@soajs.org"
@@ -23,9 +23,9 @@
     "grunt-contrib-jshint": "3.2.0"
   },
   "dependencies": {
-    "async": "3.2.5",
+    "async": "3.2.6",
     "handlebars": "4.7.8",
-    "rimraf": "3.0.0",
-    "commander": "4.0.1"
+    "rimraf": "6.0.1",
+    "commander": "13.1.0"
   }
 }
